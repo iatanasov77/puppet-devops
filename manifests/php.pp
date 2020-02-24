@@ -12,7 +12,7 @@ class devops::php
     class { '::php':
         ensure       => latest,
         manage_repos => true,
-        fpm          => true,
+        fpm          => false,
         dev          => true,
         composer     => true,
         pear         => true,
