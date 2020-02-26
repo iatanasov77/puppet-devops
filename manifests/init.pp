@@ -21,6 +21,7 @@ class devops
     if ( $vsConfig['services']['jenkins'] == true )
     {
         include devops::php
+        include devops::frontendtools
         include devops::jenkins
 	}
     
