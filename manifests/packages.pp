@@ -13,6 +13,20 @@ class devops::packages
                 value => $vsConfig['git']['userEmail'],
                 user    => 'vagrant',
             }
+        } elsif ( $value == 'git-ftp' ) {
+        	##############################
+        	# Download and Install GitFtp
+        	##############################
+        	exec { 'download git-ftp':
+			    command => '/usr/bin/wget -P /tmp https://raw.githubusercontent.com/git-ftp/git-ftp/master/git-ftp',
+			    creates => '/tmp/git-ftp',
+			}
+			
+			file { '/bin/git-ftp':
+			    source  => '/tmp/git-ftp',
+			    mode    => 'a+x',
+			    require => Exec['download git-ftp'],
+			}
         } elsif ( $value == 'gitflow' and $operatingsystem == 'Ubuntu' ) {
             package { 'git-flow':
                 ensure => present,

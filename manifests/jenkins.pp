@@ -6,10 +6,16 @@ class devops::jenkins
         }
     }
     
-    $vsConfig['services']['jenkinsPlugins'].each |Integer $index, String $value|
+    $vsConfig['services']['jenkinsPlugins'].each |String $plugin, Hash $attributes|
     {
-        jenkins::plugin { $value:
-        
+    	if $plugin == 'credentials-binding' {
+    		jenkins::plugin { $plugin:
+        		version => sprintf( "%.2f", $attributes['version'] ),
+        	}
+    	} else {
+    		jenkins::plugin { $plugin:
+        		version => $attributes['version'],
+        	}
         }
     }
 }

@@ -20,13 +20,34 @@ class devops
     
     if ( $vsConfig['services']['jenkins'] == true )
     {
-        include devops::php
-        include devops::frontendtools
+        include devenv::php
+        include devenv::phpextensions
+        include devenv::frontendtools
+        
         include devops::jenkins
 	}
     
     if ( $vsConfig['services']['gitlab'] == true )
     {
 	   include devops::gitlab
+	}
+	
+	#########################
+	# Setup Apache Server
+	#########################
+	include devenv::apache
+	apache::vhost { "${hostname}":
+		port    	=> '80',
+		docroot 	=> '/vagrant/public', 
+		override	=> 'all',
+		#php_values 		=> ['memory_limit 1024M'],
+		
+		directories => [
+			{
+				'path'		        => '/vagrant/public',
+				'allow_override'    => ['All'],
+				'Require'           => 'all granted',
+			}
+		],
 	}
 }
