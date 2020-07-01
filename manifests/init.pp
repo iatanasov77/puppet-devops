@@ -24,7 +24,9 @@ class devops
         include devenv::phpextensions
         include devenv::frontendtools
         
-        include devops::jenkins
+        class { 'devops::jenkins':
+            notify => Service[jenkins]
+        }
 	}
     
     if ( $vsConfig['services']['gitlab'] == true )
