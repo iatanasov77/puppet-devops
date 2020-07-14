@@ -6,17 +6,15 @@ class devops::jenkins
     class { 'jenkins':
         install_java      => true,
         cli_remoting_free => true,
-        cli_username      => $cli_username,
-        cli_password      => $cli_password,
+        #cli_username      => 'admin',
+        #cli_password      => 'admin',
         
-        /*
-        user_hash => {
+         user_hash => {
             'admin' => {
                 'password'  => 'admin',
-                'email'     => 'admin@devops.lh',
+                'email'     => 'i.atanasov77@gmail.com',
             }
-        },
-        */
+        }
     }
 
     class { 'jenkins::security':

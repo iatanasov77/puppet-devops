@@ -1,0 +1,7 @@
+<% @hostGroups.each do |group| -%>
+define hostgroup {
+    hostgroup_name          <%= group['groupName'] %>
+    alias                   <%= group['groupAlias'] %>
+    members                 <%= group['groupMembers'].join(',') %>
+}
+<% end -%>

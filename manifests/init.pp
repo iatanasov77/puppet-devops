@@ -1,9 +1,5 @@
 class devops
 {
-    include epel
-    include stdlib
-    include devops::packages
-    
     if ( $vsConfig['services']['maven'] == true )
     {
         # Install Maven
@@ -20,10 +16,6 @@ class devops
     
     if ( $vsConfig['services']['jenkins'] == true )
     {
-        include devenv::php
-        include devenv::phpextensions
-        include devenv::frontendtools
-        
         class { 'devops::jenkins':
             notify => Service[jenkins]
         }
@@ -34,22 +26,33 @@ class devops
 	   include devops::gitlab
 	}
 	
-	#########################
-	# Setup Apache Server
-	#########################
-	include devenv::apache
-	apache::vhost { "${hostname}":
-		port    	=> '80',
-		docroot 	=> '/vagrant/public', 
-		override	=> 'all',
-		#php_values 		=> ['memory_limit 1024M'],
-		
-		directories => [
-			{
-				'path'		        => '/vagrant/public',
-				'allow_override'    => ['All'],
-				'Require'           => 'all granted',
-			}
-		],
-	}
+	if ( $vsConfig['services']['ansible'] == true )
+    {
+       include devops::ansible
+       
+       if ( $ansibleConfig['galaxyRolesUpdate'] == true )
+        {
+            $ansibleConfig['galaxyRoles'].each |String $role|
+            {
+                exec{ "Fetch Role ${role}":
+                    command => "/usr/bin/ansible-galaxy install ${role} -p ${ansibleConfig['pathRoles']} --ignore-errors",
+                    require => Class['ansible'],
+                    onlyif  => '/usr/bin/test -e /usr/bin/ansible-galaxy',
+                }
+            }
+    
+        }
+    }
+    
+    if ( $vsConfig['services']['nagios'] == true )
+    {
+        include devops::nagiosServer
+    }
+    
+    if ( $vsConfig['services']['icinga'] == true )
+    {
+        include devops::webserver
+        include devops::icingaServer
+        include devops::nagiosPlugins
+    }
 }

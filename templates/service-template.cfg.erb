@@ -1,0 +1,11 @@
+<% @templates.each do |service| -%>
+define service {
+    name                    <%= service['name'] %>
+    use                     <% defined?(service['serviceUse']) ? service['serviceUse'] : 'generic-service' %>
+    max_check_attempts      <%= service['max_check_attempts'] %>
+    check_interval          <%= service['check_interval'] %>
+    retry_interval          <%= service['retry_interval'] %>
+    register                0
+}
+
+<% end -%>

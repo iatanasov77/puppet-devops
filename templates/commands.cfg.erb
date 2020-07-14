@@ -1,0 +1,6 @@
+<% @commands.each do |cm_name, cm_line| -%>
+define command {
+    command_name    <%= cm_name %>
+    command_line    <%= cm_line %>
+}
+<% end -%>

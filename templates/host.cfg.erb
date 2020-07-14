@@ -1,0 +1,17 @@
+define host {
+    use                     linux-server
+    host_name               <%= @hostName %>
+    alias                   <%= @hostName %>
+    address                 <%= @hostAddress %>
+}
+
+<% @services.each do |service| -%>
+define service {
+    use                     <%= service['serviceUse'] %>          ; Name of service template to use
+    host_name               <%= @hostName %>
+    service_description     <%= service['serviceDescription'] %>
+    check_command           <%= service['serviceCommand'] %>
+    notifications_enabled   <%= service['serviceNotifications'] %>
+}
+
+<% end -%>
