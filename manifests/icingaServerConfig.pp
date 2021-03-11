@@ -4,7 +4,7 @@
 # https://icinga.com/2017/06/12/how-to-monitor-your-mysql-servers-with-icinga-2/
 # https://redmine.sberg.net/projects/open-sberg-wiki/wiki/Icinga2_NRPE
 ##################################################################################
-class devops::icingaServerConfig
+class vs_devops::icingaServerConfig
 {
     # Commands
     $icingaConfig['commands'].each |String $index, Hash $command| {

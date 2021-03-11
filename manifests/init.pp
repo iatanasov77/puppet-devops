@@ -1,5 +1,7 @@
-class devops
+class vs_devops
 {
+	include vs_devops::dependencies::repos
+	
     if ( $vsConfig['services']['maven'] == true )
     {
         # Install Maven
@@ -16,19 +18,19 @@ class devops
     
     if ( $vsConfig['services']['jenkins'] == true )
     {
-        class { 'devops::jenkins':
-            notify => Service[jenkins]
+        class { 'vs_devops::jenkins':
+            #notify => Service[jenkins]
         }
 	}
     
     if ( $vsConfig['services']['gitlab'] == true )
     {
-	   include devops::gitlab
+	   include vs_devops::gitlab
 	}
 	
 	if ( $vsConfig['services']['ansible'] == true )
     {
-       include devops::ansible
+       include vs_devops::ansible
        
        if ( $ansibleConfig['galaxyRolesUpdate'] == true )
         {
@@ -46,13 +48,13 @@ class devops
     
     if ( $vsConfig['services']['nagios'] == true )
     {
-        include devops::nagiosServer
+        include vs_devops::nagiosServer
     }
     
     if ( $vsConfig['services']['icinga'] == true )
     {
-        include devops::webserver
-        include devops::icingaServer
-        include devops::nagiosPlugins
+        include vs_devops::webserver
+        include vs_devops::icingaServer
+        include vs_devops::nagiosPlugins
     }
 }

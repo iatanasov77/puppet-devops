@@ -1,9 +1,9 @@
 ############################################################
 # Using this module: https://forge.puppet.com/thias/nagios
 ############################################################
-class devops::nagiosServer
+class vs_devops::nagiosServer
 {    
-    include devops::nagiosServerConfig
+    include vs_devops::nagiosServerConfig
     
     class { '::nagios::server':
         apache_httpd_ssl                                => false,

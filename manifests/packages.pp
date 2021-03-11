@@ -1,4 +1,4 @@
-class devops::packages
+class vs_devops::packages
 {
     $vsConfig['packages'].each |Integer $index, String $value|
     {
@@ -27,9 +27,35 @@ class devops::packages
 			    mode    => 'a+x',
 			    require => Exec['download git-ftp'],
 			}
-        } elsif ( $value == 'gitflow' and $operatingsystem == 'Ubuntu' ) {
-            package { 'git-flow':
-                ensure => present,
+        } elsif ( $value == 'gitflow' ) {
+
+            case $operatingsystem 
+            {
+                'Debian', 'Ubuntu':
+                {
+                    package { 'git-flow':
+                        ensure => present,
+                    }
+                }
+                'CentOS':
+                {
+                	if $::operatingsystemmajrelease == '8' {
+						wget::fetch { "Download GitFlow Installer":
+							source      => "https://raw.github.com/nvie/gitflow/develop/contrib/gitflow-installer.sh",
+							destination => '/tmp/gitflow-installer.sh',
+							verbose     => true,
+							mode        => '0755',
+							cache_dir   => '/var/cache/wget',
+						} ->
+						Exec { "Install GitFlow":
+							command	=> '/tmp/gitflow-installer.sh',
+						}
+                	} else {
+                		package { $value:
+                            ensure => present,
+                        }
+                	}
+                }
             }
         } else {
             package { $value:

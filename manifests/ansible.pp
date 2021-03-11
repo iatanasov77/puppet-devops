@@ -1,4 +1,4 @@
-class devops::ansible
+class vs_devops::ansible
 {
     # Install Ansible
     class { 'ansible':

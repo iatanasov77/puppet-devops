@@ -1,7 +1,7 @@
 ###########################################################
 # This WebServer is especialy created for IcingaWeb 2
 ###########################################################
-class devops::webserver
+class vs_devops::webserver
 {
     #############################################################
     # 1. Installing MySql

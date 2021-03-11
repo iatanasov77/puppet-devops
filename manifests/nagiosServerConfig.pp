@@ -1,4 +1,4 @@
-class devops::nagiosServerConfig
+class vs_devops::nagiosServerConfig
 {    
     file { [ '/etc/nagios/conf.d', '/etc/nagios/objects/my_objects' ]:
         ensure => 'directory',
@@ -10,7 +10,7 @@ class devops::nagiosServerConfig
         owner   => 'root',
         group   => 'root',
         mode    => '0644',
-        content => template('devops/service-template.cfg.erb'),
+        content => template('vs_devops/service-template.cfg.erb'),
         require => Package['nagios'],
     }
     
@@ -19,7 +19,7 @@ class devops::nagiosServerConfig
         owner   => 'root',
         group   => 'root',
         mode    => '0644',
-        content => template('devops/commands.cfg.erb'),
+        content => template('vs_devops/commands.cfg.erb'),
         require => Package['nagios'],
     }
     
@@ -29,7 +29,7 @@ class devops::nagiosServerConfig
         owner   => 'root',
         group   => 'root',
         mode    => '0644',
-        content => template('devops/hostgroups.cfg.erb'),
+        content => template('vs_devops/hostgroups.cfg.erb'),
         require => Package['nagios'],
     }
     
@@ -41,7 +41,7 @@ class devops::nagiosServerConfig
             owner   => 'root',
             group   => 'root',
             mode    => '0644',
-            content => template('devops/host.cfg.erb'),
+            content => template('vs_devops/host.cfg.erb'),
             require => Package['nagios'],
         }
     }

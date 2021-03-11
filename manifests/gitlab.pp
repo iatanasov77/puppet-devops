@@ -1,4 +1,4 @@
-class devops::gitlab
+class vs_devops::gitlab
 {
     #notice( "SERVICE GITLAB VALUE: ${$vsConfig['services']['gitlab']}" )
     class { 'gitlab':

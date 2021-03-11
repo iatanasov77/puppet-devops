@@ -1,25 +1,28 @@
-class devops::jenkins
+class vs_devops::jenkins
 {
     $jenkinsPluginDir   = '/var/lib/jenkins/plugins'
     $jenkinsPluginUrl   = 'http://updates.jenkins-ci.org'
     
     class { 'jenkins':
         install_java      => true,
-        cli_remoting_free => true,
-        #cli_username      => 'admin',
-        #cli_password      => 'admin',
+#        cli_username      => 'admin',
+#        cli_password      => 'admin',
         
-         user_hash => {
-            'admin' => {
-                'password'  => 'admin',
-                'email'     => 'i.atanasov77@gmail.com',
-            }
-        }
+#         user_hash => {
+#            'admin' => {
+#                'password'  => 'admin',
+#                'email'     => 'i.atanasov77@gmail.com',
+#            }
+#        }
     }
-
-    class { 'jenkins::security':
-        security_model  => 'full_control',
+    
+    class { 'jenkins::master':
+       	
     }
+	
+#    class { 'jenkins::security':
+#        security_model  => 'full_control',
+#    }
 
     $vsConfig['services']['jenkinsPlugins'].each |String $plugin, Hash $attributes|
     {
@@ -28,49 +31,23 @@ class devops::jenkins
         } else {
             $version    = $attributes['version']
         }
-
-
-        if ( $vsConfig['services']['jenkinsWorkaround'] == true )
-        {
-            ##############################################
-            # WORKAROUND
-            ##############################################   
-            wget::fetch { "${jenkinsPluginUrl}/download/plugins/${plugin}/${version}/${plugin}.hpi":
-                destination => "${jenkinsPluginDir}/",
-                timeout     => 0,
-                verbose     => true,
+        
+        $ret = try() || {
+            notice( "Installing ${attributes['description']} ..." )
+            jenkins::plugin { $plugin:
+                version => $version,
+                #require => Class['jenkins']
             }
-        } else {
-            $ret = try() || {
-                notice( "Installing ${attributes['description']} ..." )
-                jenkins::plugin { $plugin:
-                    version => $version,
-                    require => Class['jenkins']
-                }
-                'SUCCESS!!!'
-            
-            # Only catch certain exceptions:    }.catch('ArgumentError', 'RuntimeError') |$exception| {
-            }.catch |$exception| {
-                file_line { 'jenkins_plugin_failed':
-                    path => '/vagrant/var/log/jenkins_plugin_fails',
-                    line => $plugin,
-                }
-                'FAILED!!!'
+            'SUCCESS!!!'
+        
+        # Only catch certain exceptions:    }.catch('ArgumentError', 'RuntimeError') |$exception| {
+        }.catch |$exception| {
+            file_line { 'jenkins_plugin_failed':
+                path => '/vagrant/var/log/jenkins_plugin_fails',
+                line => $plugin,
             }
-            notice( $ret )
+            'FAILED!!!'
         }
-    }
-    
-    if ( $vsConfig['services']['jenkinsWorkaround'] == true )
-    {
-        $jenkinsPlugins  = parseyaml( $facts['jenkins_plugin_deps'] )
-        $jenkinsPlugins['dependencies'].each |String $plugin, Hash $attributes|
-        {
-            wget::fetch { "${jenkinsPluginUrl}/download/plugins/${plugin}/${attributes['version']}/${plugin}.hpi":
-                destination => "${jenkinsPluginDir}/",
-                timeout     => 0,
-                verbose     => true,
-            }
-        }
+        notice( $ret )
     }
 }

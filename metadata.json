@@ -1,0 +1,35 @@
+{
+  "name": "vankosoft/vs_devops",
+  "version": "0.1.0",
+  "author": "Ivan I. Atanasov",
+  "summary": "Installs, configures, and manages the devops tools.",
+  "license": "Apache-2.0",
+  "source": "git://github.com/iatanasov77/puppet-devenv.git",
+  "project_page": "http://github.com/iatanasov77/puppet-devenv",
+  "dependencies": [
+    
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "7",
+        "8"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "7",
+        "8"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 4.0.0 < 7.0.0"
+    }
+  ],
+  "description": "DevOps Server"
+}
