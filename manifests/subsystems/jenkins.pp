@@ -1,5 +1,7 @@
-class vs_devops::jenkins
-{
+class vs_devops::subsystems::jenkins (
+	Hash $config    = {},
+	Hash $plugins	= {},
+) {
     $jenkinsPluginDir   = '/var/lib/jenkins/plugins'
     $jenkinsPluginUrl   = 'http://updates.jenkins-ci.org'
     
@@ -24,7 +26,7 @@ class vs_devops::jenkins
 #        security_model  => 'full_control',
 #    }
 
-    $vsConfig['services']['jenkinsPlugins'].each |String $plugin, Hash $attributes|
+    $plugins.each |String $plugin, Hash $attributes|
     {
         if ( $plugin == 'credentials-binding' ) {
             $version = sprintf( "%.2f", $attributes['version'] )

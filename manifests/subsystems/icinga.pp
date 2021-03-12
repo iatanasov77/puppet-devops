@@ -1,8 +1,12 @@
 ############################################################
 # Using this module: https://forge.puppet.com/thias/nagios
 ############################################################
-class vs_devops::icingaServer
-{
+class vs_devops::subsystems::icinga (
+	Hash $config    = {},
+) {
+
+	include vs_devops::webserver
+    
     Exec{ 'Icinga-Require-Epel':
         command => '/bin/yum -y install epel-release',
     } ->
@@ -16,7 +20,10 @@ class vs_devops::icingaServer
         manage_repo     => false,
         manage_package  => true,
     }
-    include vs_devops::icingaServerConfig
+    
+    
+    include vs_devops::subsystems::icinga::icingaServerConfig
+    include vs_devops::subsystems::nagios::nagiosPlugins
     
     # Icinga Web Interface
     ##############################

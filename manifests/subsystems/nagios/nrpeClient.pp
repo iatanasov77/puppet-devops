@@ -1,4 +1,4 @@
-class vs_devops::nrpeClient
+class vs_devops::subsystems::nagios::nrpeClient
 {
     class { 'nrpe':
       allowed_hosts     => ['127.0.0.1', '192.168.98.100'],

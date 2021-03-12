@@ -1,5 +1,7 @@
 class vs_devops::dependencies::repos (
-	$repos	= {},
+	$repos					= {},
+	Boolean $forcePhp7Repo  = true,
+	String $phpVersion		= '7.2',
 ) {
     case $::operatingsystem {
     	centos: {
@@ -28,9 +30,12 @@ class vs_devops::dependencies::repos (
 				yumrepoDefaults	=> $yumrepoDefaults,
 		    }
 		    
-		    class { 'vs_devops::dependencies::php7':
-				yumrepoDefaults	=> $yumrepoDefaults,
-		    }
+		    if ( $forcePhp7Repo ) {
+			    class { 'vs_devops::dependencies::php7':
+			    	phpVersion		=> $phpVersion,
+					yumrepoDefaults	=> $yumrepoDefaults,
+			    }
+			}
 	    }
 	}
 }

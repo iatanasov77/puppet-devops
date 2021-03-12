@@ -1,17 +1,20 @@
-class vs_devops::packages
-{
-    $vsConfig['packages'].each |Integer $index, String $value|
+class vs_devops::packages (
+    Array $packages         = [],
+    String $gitUserName     = 'undefined_user_name',
+    String $gitUserEmail    = 'undefined@example.com',
+) {
+    $packages.each |String $value|
     {
         if ( $value == 'git' ) {
             require git
                 
             git::config { 'user.name':
-                value => $vsConfig['git']['userName'],
+                value	=> $gitUserName,
                 user    => 'vagrant',
             }
             git::config { 'user.email':
-                value => $vsConfig['git']['userEmail'],
-                user    => 'vagrant',
+                value	=> $gitUserEmail,
+                user	=> 'vagrant',
             }
         } elsif ( $value == 'git-ftp' ) {
         	##############################
@@ -58,9 +61,11 @@ class vs_devops::packages
                 }
             }
         } else {
-            package { $value:
-                ensure => present,
-            }
+        	if ! defined(Package[$value]) {
+	            package { $value:
+	                ensure => present,
+	            }
+	        }
         }
     }
 }

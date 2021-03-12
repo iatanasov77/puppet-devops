@@ -1,4 +1,4 @@
-class vs_devops::nagiosPlugins
+class vs_devops::subsystems::nagios::nagiosPlugins
 {   
     package {[
         'nagios-plugins-all',

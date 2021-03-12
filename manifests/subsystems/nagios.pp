@@ -1,9 +1,14 @@
 ############################################################
 # Using this module: https://forge.puppet.com/thias/nagios
 ############################################################
-class vs_devops::nagiosServer
-{    
-    include vs_devops::nagiosServerConfig
+class vs_devops::subsystems::nagios (
+	Hash $config    = {},
+) {
+	#########################################################################
+	#	$nagiosConfig is defined in default manifest as global variable
+	#########################################################################
+	
+    include vs_devops::subsystems::nagios::nagiosServerConfig
     
     class { '::nagios::server':
         apache_httpd_ssl                                => false,

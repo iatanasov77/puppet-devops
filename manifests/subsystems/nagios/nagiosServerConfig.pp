@@ -1,4 +1,4 @@
-class vs_devops::nagiosServerConfig
+class vs_devops::subsystems::nagios::nagiosServerConfig
 {    
     file { [ '/etc/nagios/conf.d', '/etc/nagios/objects/my_objects' ]:
         ensure => 'directory',
