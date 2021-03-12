@@ -1,6 +1,7 @@
 class vs_devops
 {
 	include vs_devops::dependencies::repos
+	include vs_devops::packages
 	
     if ( $vsConfig['services']['maven'] == true )
     {
@@ -18,8 +19,21 @@ class vs_devops
     
     if ( $vsConfig['services']['jenkins'] == true )
     {
+    	stage { 'jenkins-plugins-cli': }
+    	stage { 'notify-services': }
+		Stage['main'] -> Stage['jenkins-plugins-cli'] -> Stage['notify-services']
+
+    	stage { 'jenkins-install': before => Stage['main'] }
         class { 'vs_devops::jenkins':
-            #notify => Service[jenkins]
+            stage	=> 'jenkins-install',
+        }
+        
+        class { 'vs_devops::jenkinsCli':
+            stage	=> 'jenkins-plugins-cli',
+        }
+        
+        class { 'vs_devops::notifyServices':
+            stage	=> 'notify-services',
         }
 	}
     
