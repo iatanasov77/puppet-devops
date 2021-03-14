@@ -12,7 +12,13 @@ class vs_devops::dependencies::repos (
 		            }
 		        }
 		    } elsif $::operatingsystemmajrelease == '8' {
-		    	
+		    	if ! defined( Package['dnf-plugins-core'] ) {
+			    	Package { 'dnf-plugins-core':
+				        ensure => present,
+				    }
+				}
+				
+				include vs_devops::dependencies::powertools
 		    } else {
 		    	fail("CentOS support only tested on major version 7 or 8, you are running version '${::operatingsystemmajrelease}'")
 		    }

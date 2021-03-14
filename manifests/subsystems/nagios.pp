@@ -12,6 +12,9 @@ class vs_devops::subsystems::nagios (
     
     class { '::nagios::server':
         apache_httpd_ssl                                => false,
+        apache_httpd									=> $config['apache_httpd'],
+        php												=> $config['apache_httpd'],
+        
         cgi_authorized_for_system_information           => '*',
         cgi_authorized_for_configuration_information    => '*',
         cgi_authorized_for_system_commands              => '*',
@@ -41,8 +44,18 @@ class vs_devops::subsystems::nagios (
         require => Package['nagios'],
     }
   
-    exec{ 'Extract Nagios Theme':
-        command => "unzip -o ${nagiosConfig['theme']['src']} -d /usr/share/nagios/html",
-        require => Package['nagios'],
-    }
+  	archive { '/tmp/vautour_style.zip':
+		ensure        	=> present,
+		source        	=> "${nagiosConfig['theme']['src']}",
+		extract       	=> true,
+		extract_path  	=> '/usr/share/nagios/html',
+		cleanup       	=> true,
+		require 		=> Package['nagios'],
+	}
+	
+	if ! $config['apache_httpd'] {
+		class { 'vs_devops::subsystems::nagios::nagiosHttpd':
+			require	=> [Class['vs_lamp::apache'], Package['nagios']]
+		}
+	}
 }

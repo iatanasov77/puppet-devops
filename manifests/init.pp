@@ -58,4 +58,9 @@ class vs_devops (
 	class { '::vs_devops::subsystems':
         subsystems      => $subsystems,
     }
+    
+    file { "${defaultDocumentRoot}/../var/subsystems.json":
+		ensure  => file,
+		content => to_json_pretty( $subsystems ),
+	}
 }
