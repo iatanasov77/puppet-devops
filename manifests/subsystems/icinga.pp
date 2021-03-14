@@ -4,24 +4,22 @@
 class vs_devops::subsystems::icinga (
 	Hash $config    = {},
 ) {
-
-	include vs_devops::webserver
-    
-    Exec{ 'Icinga-Require-Epel':
-        command => '/bin/yum -y install epel-release',
-    } ->
-    #Exec{ 'Icinga-Require-Optional-Rpms':
-    #    command => 'subscription-manager repos --enable rhel-7-server-optional-rpms',
-    #} ->
-    Exec{ 'Icinga-Rpm':
-        command => '/bin/yum -y install https://packages.icinga.com/epel/icinga-rpm-release-7-latest.noarch.rpm',
-    } ->
-    class { '::icinga2':
-        manage_repo     => false,
-        manage_package  => true,
+	case $::operatingsystem {
+    	centos: {
+    		$centosVersion	= $::operatingsystemmajrelease
+    		
+    		#include vs_devops::webserver
+		    Exec{ 'Icinga-Rpm':
+		        command => "/bin/yum -y install https://packages.icinga.com/epel/icinga-rpm-release-${centosVersion}-latest.noarch.rpm",
+		        require	=> [ Package['epel-release'] ]
+		    } ->
+		    class { '::icinga2':
+		        manage_repo     => false,
+		        manage_package  => true,
+		    }
+    	}
     }
-    
-    
+	
     include vs_devops::subsystems::icinga::icingaServerConfig
     include vs_devops::subsystems::nagios::nagiosPlugins
     
@@ -71,10 +69,10 @@ class vs_devops::subsystems::icinga (
             }
         }
     } ->
-    exec { 'Add apche to the group icingaweb2':
+    exec { 'Add user apache to the group icingaweb2':
         command => '/sbin/usermod -aG icingaweb2 apache',
         require => User['apache'],
-        notify  => Service['rh-php73-php-fpm'],
+        #notify  => Service['rh-php73-php-fpm'],
     }
     
     #########################################
