@@ -13,7 +13,7 @@ class vs_devops::subsystems::jenkins (
 #         user_hash => {
 #            'admin' => {
 #                'password'  => 'admin',
-#                'email'     => 'i.atanasov77@gmail.com',
+#                'email'     => 'email@example.com',
 #            }
 #        }
     }
