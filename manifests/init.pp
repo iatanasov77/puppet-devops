@@ -25,15 +25,19 @@ class vs_devops (
     
     Boolean $forcePhp7Repo      = true,
 ) {
+    stage { 'dependencies-install': before => Stage['main'] }
+    
 	class { '::vs_devops::dependencies::repos':
-		forcePhp7Repo	=> $forcePhp7Repo,
-		phpVersion		=> $phpVersion,
-	} ->
+		forcePhp7Repo => $forcePhp7Repo,
+		phpVersion    => $phpVersion,
+		stage         => 'dependencies-install',
+	}
 	
 	class { '::vs_devops::packages':
         packages        => $packages,
         gitUserName     => $gitUserName,
         gitUserEmail    => $gitUserEmail,
+        #stage           => 'dependencies-install',
     } ->
     
     class { '::vs_devops::lamp':

@@ -3,6 +3,14 @@ class vs_devops::dependencies::repos (
 	Boolean $forcePhp7Repo  = true,
 	String $phpVersion		= '7.2',
 ) {
+
+    $yumrepoDefaults = {
+        'ensure'   => 'present',
+        'enabled'  => true,
+        'gpgcheck' => false,
+        'priority' => 50,
+    }
+            
     case $::operatingsystem {
     	centos: {
 		    if $::operatingsystemmajrelease == '7' {
@@ -18,19 +26,16 @@ class vs_devops::dependencies::repos (
 				    }
 				}
 				
-				include vs_devops::dependencies::powertools
+				class { 'vs_devops::dependencies::powertools':
+                    yumrepoDefaults => $yumrepoDefaults,
+                }
 		    } else {
 		    	fail("CentOS support only tested on major version 7 or 8, you are running version '${::operatingsystemmajrelease}'")
 		    }
 
-	        $yumrepoDefaults = {
-	            'ensure'   => 'present',
-	            'enabled'  => true,
-	            'gpgcheck' => false,
-	            'priority' => 50,
-	        }
-	        
-			include vs_devops::dependencies::epel
+			class { 'vs_devops::dependencies::epel':
+                yumrepoDefaults => $yumrepoDefaults,
+			}
 			
 			class { 'vs_devops::dependencies::remi':
 				yumrepoDefaults	=> $yumrepoDefaults,

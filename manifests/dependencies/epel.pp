@@ -1,5 +1,5 @@
 class vs_devops::dependencies::epel (
-
+    $yumrepoDefaults,
 ) {
 	case $::operatingsystem {
     	centos: {
@@ -10,7 +10,11 @@ class vs_devops::dependencies::epel (
 		        Package { 'epel-release':
 		            ensure   => 'present',
 		            provider => 'yum',
-		        }
+		        } ->
+		        yumrepo { 'epel-testing':
+                    descr       => "Enable Epel-Testing Repo",
+                    *           => $yumrepoDefaults,
+                }
 		    }
 		}
 	}
