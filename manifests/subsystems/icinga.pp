@@ -21,7 +21,15 @@ class vs_devops::subsystems::icinga (
     }
 	
     include vs_devops::subsystems::icinga::icingaServerConfig
-    include vs_devops::subsystems::nagios::nagiosPlugins
+    
+    if $::operatingsystem == 'centos' and $::operatingsystemmajrelease == '8' {
+        $nagiosPluginsRequire   = [ Class['vs_devops::dependencies::powertools']]
+    } else {
+        $nagiosPluginsRequire   = []
+    }
+    class{ 'vs_devops::subsystems::nagios::nagiosPlugins':
+        require => $nagiosPluginsRequire,
+    }
     
     # Icinga Web Interface
     ##############################

@@ -1,20 +1,23 @@
 class vs_devops::subsystems::nagios::nagiosPlugins
 {
     if $::operatingsystem == 'centos' and $::operatingsystemmajrelease == '8' {
-        $requiredPackages   = [ Package['perl-utf8-all'] ]
-        
-        yumrepo { 'powertools':
-            descr       => 'Enable PowerTools repository for Enterprise Linux',
-            require     => Package['dnf-plugins-core'],
-            ensure      => 'present',
-            enabled     => 1,
-            gpgcheck    => 0,
+    
+        #####################################################################
+        # Workaroaund: Force enabling required repositories for CentOs 8
+        #####################################################################
+        Exec { "Force Enabling YumRepo epel-testing":
+            command => 'dnf config-manager --set-enabled epel-testing',
         }
+        Exec { "Force Enabling YumRepo PowerTools":
+            command => 'dnf config-manager --set-enabled powertools',
+        }
+    
+        $requiredPackages   = [ Package['perl-utf8-all'] ]
         
         if ! defined( Package['perl-utf8-all'] ) {
             package { 'perl-utf8-all':
                 ensure  => 'present',
-                require => Yumrepo["powertools"],
+                require => Yumrepo["PowerTools"],
             }
         }
     } else {
