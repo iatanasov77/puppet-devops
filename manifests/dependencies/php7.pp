@@ -21,7 +21,13 @@ class vs_devops::dependencies::php7 (
 		        mirrorlist	=> $repoMirrors,
 		        require  	=> $requiredPackages,
 		        *          	=> $yumrepoDefaults,
-		    }
+		    } ->
+		    Exec { 'Reset PHP Module':
+                command => 'dnf module reset -y php',
+            }
+            -> Exec { 'Install PHP Module Stream':
+                command => "dnf module install -y php:remi-${phpVersion}",
+            }
 		}
 	}
 }

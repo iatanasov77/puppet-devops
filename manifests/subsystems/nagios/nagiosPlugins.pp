@@ -8,10 +8,6 @@ class vs_devops::subsystems::nagios::nagiosPlugins
         Exec { "Force Enabling YumRepo epel-testing":
             command => 'dnf config-manager --set-enabled epel-testing',
         }
-        Exec { "Force Enabling YumRepo PowerTools":
-            command => 'dnf config-manager --set-enabled powertools',
-        }
-    
         $requiredPackages   = [ Package['perl-utf8-all'] ]
         
         if ! defined( Package['perl-utf8-all'] ) {

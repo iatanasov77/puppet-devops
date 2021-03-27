@@ -30,8 +30,12 @@ class vs_devops (
 	class { '::vs_devops::dependencies::repos':
 		forcePhp7Repo => $forcePhp7Repo,
 		phpVersion    => $phpVersion,
+		mySqlProvider => $mySqlProvider,
 		stage         => 'dependencies-install',
-	}
+	} ->
+    class { 'vs_devops::dependencies::packages':
+        stage   => 'dependencies-install',
+    }
 	
 	class { '::vs_devops::packages':
         packages        => $packages,
