@@ -24,6 +24,8 @@ class vs_devops (
     Hash $databases				= {},
     
     Boolean $forcePhp7Repo      = true,
+    
+    Hash $vstools               = {},
 ) {
     stage { 'dependencies-install': before => Stage['main'] }
     
@@ -37,6 +39,10 @@ class vs_devops (
         stage   => 'dependencies-install',
     }
 	
+	class { '::vs_devops::vstools':
+        vstools => $vstools,
+    }
+    
 	class { '::vs_devops::packages':
         packages        => $packages,
         gitUserName     => $gitUserName,
