@@ -7,8 +7,8 @@ class vs_devops::subsystems::jenkins (
     
     class { 'jenkins':
         install_java      => true,
-#        cli_username      => 'admin',
-#        cli_password      => 'admin',
+        cli_username      => "${config['jenkinsAdmin']['username']}",
+        cli_password      => "${config['jenkinsAdmin']['password']}",
         
 #         user_hash => {
 #            'admin' => {
@@ -18,14 +18,17 @@ class vs_devops::subsystems::jenkins (
 #        }
     }
     
-    class { 'jenkins::master':
-       	
-    }
-	
-#    class { 'jenkins::security':
-#        security_model  => 'full_control',
+    
+#    jenkins::user { 'admin':
+#        email    => 'jdoe@example.com',
+#        password => 'admin',
 #    }
 
+    
+    class { 'jenkins::master':
+       	version => "${config['swarmVersion']}",
+    }
+	
     $plugins.each |String $plugin, Hash $attributes|
     {
         if ( $plugin == 'credentials-binding' ) {
