@@ -8,7 +8,7 @@ class vs_devops::subsystems::elastic_stack (
     
     class { 'logstash':
         #version => '7.12.0',
-        ensure  => '7.12.0',
+        ensure  => 'present',
     }
     
     # You must provide a valid pipeline configuration for the service to start.
