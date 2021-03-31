@@ -24,6 +24,13 @@ class vs_devops::subsystems::jenkins (
 #        password => 'admin',
 #    }
 
+/*
+    jenkins::credentials { 'git-iatanasov77':
+        uuid        => ''
+        password    => '',
+        description => '',
+    }
+*/
     
     class { 'jenkins::master':
        	version => "${config['swarmVersion']}",
