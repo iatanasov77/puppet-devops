@@ -13,7 +13,7 @@ class vs_devops::subsystems::elastic_stack (
     }
     
     class { 'kibana':
-        stage   => 'elastic_stack_late_install',
+        #stage   => 'elastic_stack_late_install',
         config => {
             'server.port' => '8090',
         },
