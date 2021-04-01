@@ -3,12 +3,19 @@ class vs_devops::subsystems::elastic_stack (
 ) {
 
     class { 'elasticsearch':
-        version => '7.12.0'
-    }
+        version => '7.12.0',
+    } ->
     
     class { 'logstash':
-        #version => '7.12.0',
-        ensure  => 'present',
+        
+    } ->
+    
+    class { 'kibana':
+        ensure => '7.12.0',
+        config => {
+            'server.port' => '8090',
+        },
+        require => Class['elastic_stack::repo'],
     }
     
     # You must provide a valid pipeline configuration for the service to start.
@@ -17,11 +24,4 @@ class vs_devops::subsystems::elastic_stack (
         content => template('path/to/config.file'),
     }
     */
-    
-    class { 'kibana':
-        ensure => '7.12.0',
-        config => {
-            'server.port' => '8090',
-        }
-    }
 }
