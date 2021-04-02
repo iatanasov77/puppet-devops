@@ -1,12 +1,12 @@
 input {
-  beats {
-    port => 5044
-  }
+    beats {
+        port => <%= @beatsPort %>
+    }
 }
 
 output {
-  elasticsearch {
-      hosts   => ["http://localhost:9200"]
-      index   => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
-  }
+    elasticsearch {
+        hosts   => ["http://localhost:<%= @elkPort %>"]
+        index   => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
+    }
 }

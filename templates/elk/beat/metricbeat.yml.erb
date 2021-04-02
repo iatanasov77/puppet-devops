@@ -1,0 +1,15 @@
+
+#----------------------------- Modules configuration --------------------------------
+metricbeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  
+  reload.enabled: false
+  
+#----------------------------- Elasticsearch template setting --------------------------------
+setup.template.settings:
+  index.number_of_shards: 1
+  index.codec: best_compression
+
+#----------------------------- Logstash output --------------------------------
+output.logstash:
+  hosts: ["10.3.3.3:5044"]

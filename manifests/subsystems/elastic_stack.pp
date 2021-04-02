@@ -5,37 +5,36 @@ class vs_devops::subsystems::elastic_stack (
     Stage['main'] -> Stage['elastic_stack_late_install']
     
     class { 'elasticsearch':
-        version     => '7.12.0',
+        version     => $config['version'],
         
         api_host    => 'localhost',
-        api_port    => 9200,
+        api_port    => $config['elasticsearch_port'],
         config      => {
             'cluster'   => {
                 'name'                  => 'VsElkCluster',
-                'initial_master_nodes'  => ["devops.lh"]
+                'initial_master_nodes'  => ["${config['host_name']}"]
             }
         }
     }
     
     class { 'kibana':
         config => {
-            'server.port' => '5601',
-            'server.host' => '10.3.3.3',
-            'server.name' => 'devops.lh',
+            'server.port' => $config['kibana_port'],
+            'server.host' => $config['kibana_host'],
+            'server.name' => $config['host_name'],
             
-            'elasticsearch.hosts'           => ["http://localhost:9200"],
+            'elasticsearch.hosts'           => ["http://localhost:${config['elasticsearch_port']}"],
             'elasticsearch.requestTimeout'  => '180000',
         },
     }
     
-    class { 'logstash':
+    class { 'vs_devops::subsystems::elastic_stack::logstash':
+        config  => $config,
         stage   => 'elastic_stack_late_install',
     }
     
-    # You must provide a valid pipeline configuration for the service to start.
-    logstash::configfile { 'logstash_config':
-        content => template( "${module_name}/elk/logstash/logstash.conf.erb" ),
+    class { 'vs_devops::subsystems::elastic_stack::beat::metricbeat':
+        config  => $config,
         stage   => 'elastic_stack_late_install',
-        require => Class['logstash'],
     }
 }
