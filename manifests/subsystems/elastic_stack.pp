@@ -5,7 +5,16 @@ class vs_devops::subsystems::elastic_stack (
     stage { 'elastic_stack_late_install': }
     Stage['main'] -> Stage['elastic_stack_late_install']
     class { 'elasticsearch':
-        version => '7.12.0',
+        version     => '7.12.0',
+        
+        api_host    => 'devops.lh',
+        api_port    => 9200,
+        config      => {
+            'cluster'   => {
+                'name'                  => 'ClusterName',
+                'initial_master_nodes'  => ["devops.lh"]
+            }
+        }
     }
     
     class { 'logstash':
@@ -13,9 +22,13 @@ class vs_devops::subsystems::elastic_stack (
     }
     
     class { 'kibana':
-        #stage   => 'elastic_stack_late_install',
         config => {
-            'server.port' => '8090',
+            'server.port' => '5601',
+            'server.host' => '10.3.3.3',
+            'server.name' => 'devops.lh',
+            
+            'elasticsearch.hosts'           => ["http://localhost:9200"]
+            'elasticsearch.requestTimeout'  => '180000',
         },
     }
     
