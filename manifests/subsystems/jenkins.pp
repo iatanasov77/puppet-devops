@@ -32,6 +32,20 @@ class vs_devops::subsystems::jenkins (
     }
 */
     
+/*
+    https://github.com/voxpupuli/puppet-jenkins/blob/master/NATIVE_TYPES_AND_PROVIDERS.md
+    
+    jenkins_credentials { 'gitlab-iatanasov77':
+        ensure      => 'present',
+        description => 'account info for user bar',
+        domain      => 'undef',
+        impl        => 'UsernamePasswordCredentialsImpl',
+        password    => 'ivan778503',
+        scope       => 'GLOBAL',
+        username    => 'iatanasov77',
+    }
+*/
+
     class { 'jenkins::master':
        	version => "${config['swarmVersion']}",
     }

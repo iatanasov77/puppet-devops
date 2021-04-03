@@ -20,8 +20,9 @@ class vs_devops::subsystems (
 			        }
 			        
 			        class { 'vs_devops::subsystems::jenkins::jenkinsCli':
-			        	plugins	=> $subsys['jenkinsPluginsCli'],
-			            stage	=> 'jenkins-plugins-cli',
+                        plugins     => $subsys['jenkinsPluginsCli'],
+                        credentials => $subsys['jenkinsCredentialsCli'],
+                        stage       => 'jenkins-plugins-cli',
 			        }
 			        
 			        class { 'vs_devops::notifyServices':
@@ -35,10 +36,6 @@ class vs_devops::subsystems (
                 if ( $subsys['enabled'] ) {
                     class { "::vs_devops::subsystems::${$subsysKey}":
                     	config	=> $subsys,
-                        #require	=> [
-                        #	Class['vs_lamp::php'], 
-                        #	Class['vs_lamp::apache']
-                        #],
                     }
                 }
       
