@@ -2,6 +2,9 @@ class vs_devops::subsystems::jenkins::jenkinsCli (
 	Array $plugins     = [],
 	Hash $credentials  = {},
 ) {
+    /*
+     * PLUGINS
+     */
 	$plugins.each |String $plugin|
 	{
 		Exec { "Install Plugin '${plugin}' by CLI":
@@ -13,21 +16,19 @@ class vs_devops::subsystems::jenkins::jenkinsCli (
 	
 	/*
 	 * CREDENTIALS
+	 * Tutorial: https://sharadchhetri.com/manage-jenkins-credentials/
 	 */
 	$credentials.each |String $id, Hash $crd|
     {
-        Exec { "Install Plugin '${plugin}' by CLI":
-            command    => "echo '<com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
-<scope>GLOBAL</scope>
-  <id>${id}</id>
-  <description></description>
-  <username>${crd['username']}</username>
-  <password>${crd['password']}</password>
-</com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>'\
- | /usr/bin/java -jar /usr/lib/jenkins/jenkins-cli.jar -s http://localhost:8080/ \
-   create-credentials-by-xml system::system::jenkins _",
+        vs_devops::subsystems::jenkins::credentialXMl { "jenkins-credential-${id}":
+            crdId   => $id,
+            config  => $crd,
+        } ->
+        Exec { "Add Global Credential: ${id}":
+            command    => "/usr/bin/java -jar /usr/lib/jenkins/jenkins-cli.jar -s http://localhost:8080/ \
+                            create-credentials-by-xml system::system::jenkins _  < /tmp/jenkins-credential-${id}.xml",
             timeout    => 1800,
             tries      => 3,
         }
-    } 
+    }
 }
