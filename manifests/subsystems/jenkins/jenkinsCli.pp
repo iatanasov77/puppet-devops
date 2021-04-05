@@ -14,7 +14,7 @@ class vs_devops::subsystems::jenkins::jenkinsCli (
 	/*
 	 * CREDENTIALS
 	 */
-	$credentials.each |String $id, String $crd|
+	$credentials.each |String $id, Hash $crd|
     {
         Exec { "Install Plugin '${plugin}' by CLI":
             command    => "echo '<com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
