@@ -9,9 +9,10 @@ class vs_devops::subsystems (
             {
             	if ( $subsys['enabled'] ) {
             		stage { 'jenkins-plugins-cli': }
-            		stage { 'jenkins-jobs': }
+            		#stage { 'jenkins-jobs': }
 			    	stage { 'notify-services': }
-					Stage['main'] -> Stage['jenkins-plugins-cli'] -> Stage['jenkins-jobs'] -> Stage['notify-services']
+					#Stage['main'] -> Stage['jenkins-plugins-cli'] -> Stage['jenkins-jobs'] -> Stage['notify-services']
+					Stage['main'] -> Stage['jenkins-plugins-cli'] -> Stage['notify-services']
 			
 			    	stage { 'jenkins-install': before => Stage['main'] }
 			        class { 'vs_devops::subsystems::jenkins':
@@ -23,13 +24,16 @@ class vs_devops::subsystems (
 			        class { 'vs_devops::subsystems::jenkins::jenkinsCli':
                         plugins     => $subsys['jenkinsPluginsCli'],
                         credentials => $subsys['jenkinsCredentialsCli'],
+                        jobs        => $subsys['jobs'],
                         stage       => 'jenkins-plugins-cli',
 			        }
 			        
+			        /*
 			        class { 'vs_devops::subsystems::jenkins::jenkinsJobs':
                         jobs    => $subsys['jobs'],
                         stage   => 'jenkins-jobs',
                     }
+                    */
 			        
 			        class { 'vs_devops::notifyServices':
 			            stage	=> 'notify-services',

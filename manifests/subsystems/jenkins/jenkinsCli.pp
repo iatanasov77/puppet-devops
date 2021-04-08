@@ -1,6 +1,7 @@
 class vs_devops::subsystems::jenkins::jenkinsCli (
 	Array $plugins     = [],
 	Hash $credentials  = {},
+	Hash $jobs         = {},
 ) {
     /*
      * PLUGINS
@@ -29,6 +30,13 @@ class vs_devops::subsystems::jenkins::jenkinsCli (
                             create-credentials-by-xml system::system::jenkins _  < /tmp/jenkins-credential-${id}.xml",
             timeout    => 1800,
             tries      => 3,
+        }
+    }
+    
+    $jobs.each |String $job, Hash $jobConfig|
+    {
+        jenkins::job { "${jobConfig['name']}":
+            config  => template("vs_devops/jenkins/jobs/${jobConfig['type']}.xml.erb"),
         }
     }
 }
