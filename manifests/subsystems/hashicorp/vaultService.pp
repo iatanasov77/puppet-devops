@@ -27,4 +27,14 @@ define vs_devops::subsystems::hashicorp::vaultService (
         ensure  => 'running',
     }
     
+    -> Exec { 'Initialize Vault':
+        command => "curl --request POST --data '{\"secret_shares\": 1, \"secret_threshold\": 1}' http://127.0.0.1:${vaultPort}/v1/sys/init > /tmp/vault_init.json",
+        user    => 'vagrant',
+    }
+    -> File { "vault_profile.sh":
+        ensure  => file,
+        path    => "/etc/profile.d/vault.sh",
+        content => template( 'vs_devops/hashicorp/vault_profile.sh.erb' ),
+        mode    => '0755',
+    }
 }
