@@ -16,6 +16,9 @@ class vs_devops::subsystems::hashicorp (
     if $config['vault'] {
         class { hashicorp::vault:
             version   => $config['vault'],
+        } ->
+        vs_devops::subsystems::hashicorp::vaultService { 'vault':
+            vaultPort   => '8282',
         }
     }
 }
