@@ -29,6 +29,8 @@ define vs_devops::subsystems::hashicorp::vaultService (
     Exec { 'Initialize Vault':
         command => "curl --request POST --data '{\"secret_shares\": 1, \"secret_threshold\": 1}' http://127.0.0.1:${vaultPort}/v1/sys/init > /tmp/vault_init.json",
         user    => 'vagrant',
+        timeout    => 1800,
+        tries      => 10,
     } ->
     class { '::vs_devops::subsystems::hashicorp::vaultEnvironment':
         vaultPort   => $vaultPort,
