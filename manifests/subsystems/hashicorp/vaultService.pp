@@ -2,7 +2,7 @@ define vs_devops::subsystems::hashicorp::vaultService (
     String $vaultPort   = '8200',
     String $vaultConfig = '/etc/vault/config.hcl',
     String $homeDir     = '/home/vagrant',
-    String $dataPath    = /var/lib/vault',
+    String $dataPath    = '/var/lib/vault',
 ) {
     File { '/etc/vault':
         ensure  => directory,
