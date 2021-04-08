@@ -27,13 +27,6 @@ class vs_devops::subsystems::jenkins (
     class { 'jenkins::master':
        	version => "${config['swarmVersion']}",
     }
-	
-	$config['jobs'].each |String $job, Hash $jobConfig|
-    {
-        jenkins::job { "${jobConfig['name']}":
-            config  => template("vs_devops/jenkins/jobs/${jobConfig['type']}.xml.erb"),
-        }
-    }
     
     $plugins.each |String $plugin, Hash $attributes|
     {
