@@ -31,7 +31,8 @@ define vs_devops::subsystems::hashicorp::vaultService (
         user    => 'vagrant',
     } ->
     class { '::vs_devops::subsystems::hashicorp::vaultEnvironment':
-        vaultKeys   => parsejson( '/tmp/vault_init.json' ),
+        #vaultKeys   => parsejson( '/tmp/vault_init.json' ),
+        vaultKeys   => $::vs_devops::vault_keys,
         vaultPort   => $vaultPort,
     }
 }
