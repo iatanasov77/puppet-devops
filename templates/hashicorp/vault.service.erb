@@ -2,7 +2,6 @@
 Description=Unit that keeps vault server up and running
 
 [Service]
-Environment= VAULT_ADDR=http://0.0.0.0:<%= @vaultPort %>
 WorkingDirectory=<%= @homeDir %>
 ExecStart=/usr/local/bin/vault server -config <%= @vaultConfig %>
 Restart=always
