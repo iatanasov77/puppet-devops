@@ -1,7 +1,7 @@
 class vs_devops::subsystems::hashicorp::vaultEnvironment (
     String $vaultPort   = '8200',
 ) {
-    $vaultKeys  = $::vs_devops::vault_keys
+    $vaultKeys  = $vault_keys
     $vaultToken = $vaultKeys['root_token']
     File { "vault_profile.sh":
         ensure  => file,
