@@ -29,7 +29,7 @@ define vs_devops::subsystems::hashicorp::vaultService (
     
     stage { 'vault-setup': }
     Stage['main'] -> Stage['vault-setup']
-    class { '::vs_devops::subsystems::hashicorp::vaultEnvironment':
+    class { '::vs_devops::subsystems::hashicorp::vaultSetup':
         vaultPort   => $vaultPort,
         stage       => 'vault-setup',
     }
