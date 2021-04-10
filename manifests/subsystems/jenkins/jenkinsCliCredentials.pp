@@ -1,6 +1,6 @@
 class vs_devops::subsystems::jenkins::jenkinsCliCredentials (
-	Hash $credentials          = {},
-	String $readPrivateKeys    = undef,
+	Hash $credentials  = {},
+	$readPrivateKeys   = undef,
 ) {	
 	/*
 	 * Tutorial: https://sharadchhetri.com/manage-jenkins-credentials/
@@ -10,15 +10,11 @@ class vs_devops::subsystems::jenkins::jenkinsCliCredentials (
         vs_devops::subsystems::jenkins::credentialXMl { "jenkins-credential-${id}":
             crdId   => $id,
             config  => $crd,
-        }
-        
-        if ( $crd['type'] == 'SSHUserPrivateKey' and $readPrivateKeys ) {
-            Exec { "Set PrivateKey for: ${id}":
-                command => "${readPrivateKeys} -i${id}",
-                #require => 
-            }
-        }
-        
+        } ->
+        Exec { "Set PrivateKey for: ${id}":
+            command => "${readPrivateKeys} -i${id}",
+            #require => 
+        } ->
         Exec { "Add Global Credential: ${id}":
             command    => "/usr/bin/java -jar /usr/lib/jenkins/jenkins-cli.jar -s http://localhost:8080/ \
                             create-credentials-by-xml system::system::jenkins _  < /tmp/jenkins-credential-${id}.xml",
