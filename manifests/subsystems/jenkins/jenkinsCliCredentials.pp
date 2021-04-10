@@ -19,8 +19,9 @@ class vs_devops::subsystems::jenkins::jenkinsCliCredentials (
         }
         
         if $crd['type'] == 'SSHUserPrivateKey' and $readPrivateKeys {
-            -> Exec { "Set PrivateKey for '${id}'":
+            Exec { "Set PrivateKey for: ${id}":
                 command => "${readPrivateKeys} -i${id}",
+                #require => 
             }
         }
     }
