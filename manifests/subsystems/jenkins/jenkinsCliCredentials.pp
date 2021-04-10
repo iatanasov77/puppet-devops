@@ -18,6 +18,12 @@ class vs_devops::subsystems::jenkins::jenkinsCliCredentials (
             tries      => 3,
         }
         
+        notify { "JENKINS CREDENTIALS TYPE: '${crd['type']}'":
+            withpath => false,
+        }
+        notify { "JENKINS CREDENTIALS XML REPLACE SCRIPT: '${readPrivateKeys}'":
+            withpath => false,
+        }
         if $crd['type'] == 'SSHUserPrivateKey' and $readPrivateKeys {
             Exec { "Set PrivateKey for: ${id}":
                 command => "${readPrivateKeys} -i${id}",
