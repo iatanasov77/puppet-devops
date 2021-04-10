@@ -10,7 +10,7 @@ class vs_devops::subsystems::jenkins::jenkinsCliCredentials (
         vs_devops::subsystems::jenkins::credentialXMl { "jenkins-credential-${id}":
             crdId   => $id,
             config  => $crd,
-        } 
+        } ->
         
         notify { "JENKINS CREDENTIALS TYPE: '${crd['type']}'":
             withpath => false,
@@ -22,7 +22,7 @@ class vs_devops::subsystems::jenkins::jenkinsCliCredentials (
             }
         }
         
-        -> Exec { "Add Global Credential: ${id}":
+        Exec { "Add Global Credential: ${id}":
             command    => "/usr/bin/java -jar /usr/lib/jenkins/jenkins-cli.jar -s http://localhost:8080/ \
                             create-credentials-by-xml system::system::jenkins _  < /tmp/jenkins-credential-${id}.xml",
             timeout    => 1800,
