@@ -26,6 +26,7 @@ class vs_devops (
     Boolean $forcePhp7Repo      = true,
     
     Hash $vstools               = {},
+    String $vaultPort           = '8200',
 ) {
     stage { 'dependencies-install': before => Stage['main'] }
     
@@ -71,6 +72,7 @@ class vs_devops (
     
 	class { '::vs_devops::subsystems':
         subsystems      => $subsystems,
+        vaultPort       => $vaultPort,
     }
     
     file { "${defaultDocumentRoot}/../var/subsystems.json":

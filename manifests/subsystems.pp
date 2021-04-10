@@ -1,5 +1,6 @@
 class vs_devops::subsystems (
     Hash $subsystems    = {},
+    String $vaultPort   = '8200',
 ) {
 	$subsystems.each |String $subsysKey, Hash $subsys| {
      
@@ -33,6 +34,14 @@ class vs_devops::subsystems (
 			        class { 'vs_devops::notifyServices':
 			            stage	=> 'notify-services',
 			        }
+                }
+            }
+            
+            'hashicorp':
+            {
+                class { 'vs_devops::subsystems::hashicorp':
+                    config      => $subsys,
+                    vaultPort   => $vaultPort,
                 }
             }
             

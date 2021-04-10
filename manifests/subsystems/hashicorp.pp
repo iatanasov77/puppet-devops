@@ -1,5 +1,6 @@
 class vs_devops::subsystems::hashicorp (
-	Hash $config    = {},
+	Hash $config       = {},
+	String $vaultPort  = '8200',
 ) {
     if $config['packer'] {
         class { hashicorp::packer:
@@ -18,7 +19,7 @@ class vs_devops::subsystems::hashicorp (
             version   => $config['vault'],
         } ->
         vs_devops::subsystems::hashicorp::vaultService { 'vault':
-            vaultPort   => '8282',
+            vaultPort   => $vaultPort,
         }
     }
 }
