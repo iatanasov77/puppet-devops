@@ -20,7 +20,6 @@ define vs_devops::subsystems::jenkins::credentialXMl (
         $crdPrivateKey  = $config['privateKey']
     }
     
-
     File { "/tmp/jenkins-credential-${crdId}.xml":
         ensure  => file,
         content => template( "vs_devops/jenkins/credentials/${config['type']}.xml.erb" ),

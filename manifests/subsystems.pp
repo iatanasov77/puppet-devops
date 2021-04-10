@@ -20,9 +20,8 @@ class vs_devops::subsystems (
 			            stage	=> 'jenkins-install',
 			        }
 			        
-			        class { 'vs_devops::subsystems::jenkins::jenkinsCli':
+			        class { 'vs_devops::subsystems::jenkins::jenkinsCliPlugins':
                         plugins     => $subsys['jenkinsPluginsCli'],
-                        credentials => $subsys['jenkinsCredentialsCli'],
                         stage       => 'jenkins-plugins-cli',
 			        }
 			        

@@ -1,21 +1,8 @@
-class vs_devops::subsystems::jenkins::jenkinsCli (
-	Array $plugins     = [],
-	Hash $credentials  = {},
-) {
-    /*
-     * PLUGINS
-     */
-	$plugins.each |String $plugin|
-	{
-		Exec { "Install Plugin '${plugin}' by CLI":
-        	command	   => "/usr/bin/java -jar /usr/lib/jenkins/jenkins-cli.jar -s http://127.0.0.1:8080/ install-plugin ${plugin}",
-        	timeout    => 1800,
-        	tries      => 3,
-        }
-	}
-	
+class vs_devops::subsystems::jenkins::jenkinsCliCredentials (
+	Hash $credentials          = {},
+	String $readPrivateKeys    = undef,
+) {	
 	/*
-	 * CREDENTIALS
 	 * Tutorial: https://sharadchhetri.com/manage-jenkins-credentials/
 	 */
 	$credentials.each |String $id, Hash $crd|
@@ -29,6 +16,12 @@ class vs_devops::subsystems::jenkins::jenkinsCli (
                             create-credentials-by-xml system::system::jenkins _  < /tmp/jenkins-credential-${id}.xml",
             timeout    => 1800,
             tries      => 3,
+        }
+        
+        if $crd['type'] == 'SSHUserPrivateKey' and $readPrivateKeys {
+            -> Exec { "Set PrivateKey for '${id}'":
+                command => "${readPrivateKeys} -i${id}",
+            }
         }
     }
 }
