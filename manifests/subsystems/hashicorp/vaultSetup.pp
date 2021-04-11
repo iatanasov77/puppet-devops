@@ -1,9 +1,8 @@
 class vs_devops::subsystems::hashicorp::vaultSetup (
-    String $vaultPort   = '8200',
-    /* Path to the Json file with secrets */
-    String $secretsData = '',
+    /* Setup Script */
+    String $vaultSetup = '/usr/bin/php /vagrant/vault.d/vault_setup.php',
 ) {
     Exec { 'Setup Vault':
-        command => "/usr/bin/php /vagrant/vault.d/vault_setup.php -p${vaultPort} -d '${secretsData}'",
+        command => "${vaultSetup}",
     }
 }
