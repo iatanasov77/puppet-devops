@@ -1,13 +1,13 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<flow-definition plugin="workflow-job@2.40">
+<flow-definition plugin="<%= @config['plugins']['flowPlugin'] %>">
     <actions/>
     <description/>
     <keepDependencies>false</keepDependencies>
     <properties>
         
     </properties>
-    <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.90">
-        <script><%= `/usr/bin/cat ${jobConfig['pipeline']}` %></script>
+    <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="<%= @config['plugins']['definitionPlugin'] %>">
+        <script><%= `@fetchPipelineCommand` %></script>
         <sandbox>true</sandbox>
     </definition>
     <triggers/>

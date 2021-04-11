@@ -7,7 +7,7 @@ class vs_devops::subsystems::jenkins::jenkinsCliCredentials (
 	 */
 	$credentials.each |String $id, Hash $crd|
     {
-        vs_devops::subsystems::jenkins::credentialXMl { "jenkins-credential-${id}":
+        vs_devops::subsystems::jenkins::credentialXml { "jenkins-credential-${id}":
             crdId   => $id,
             config  => $crd,
         } ->

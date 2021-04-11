@@ -1,4 +1,4 @@
-define vs_devops::subsystems::jenkins::credentialXMl (
+define vs_devops::subsystems::jenkins::credentialXml (
     String $crdId,
     Hash $config,
 ) {
