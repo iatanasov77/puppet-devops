@@ -7,7 +7,7 @@ class vs_devops::subsystems::jenkins::jenkinsCliJobs (
             jobId   => $id,
             config  => $job,
         } ->
-        Exec { "Add Global Credential: ${id}":
+        Exec { "Add Job: ${id}":
             command    => "/usr/bin/java -jar /usr/lib/jenkins/jenkins-cli.jar -s http://localhost:8080/ \
                             create-job \"${job['name']}\"  < /tmp/jenkins-job-${id}.xml",
             timeout    => 1800,

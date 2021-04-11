@@ -4,6 +4,9 @@ define vs_devops::subsystems::jenkins::jobXml (
 ) {
     if $config['type']  == 'Pipeline' {
         $fetchPipelineCommand   = "/usr/bin/cat ${config['pipeline']}"
+        notify { "FETCH PIPELINE COMMAND ${jobId}: ${fetchPipelineCommand}":
+            withpath => false,
+        }
     }
     
     File { "/tmp/jenkins-job-${jobId}.xml":
