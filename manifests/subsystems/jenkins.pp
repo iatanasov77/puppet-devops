@@ -6,9 +6,10 @@ class vs_devops::subsystems::jenkins (
     $jenkinsPluginUrl   = 'http://updates.jenkins-ci.org'
     
     class { 'jenkins':
-        install_java      => true,
-        cli_username      => "${config['jenkinsAdmin']['username']}",
-        cli_password      => "${config['jenkinsAdmin']['password']}",
+        version         => "${config['version']}",
+        install_java    => true,
+        cli_username    => "${config['jenkinsAdmin']['username']}",
+        cli_password    => "${config['jenkinsAdmin']['password']}",
         
 #         user_hash => {
 #            'admin' => {
@@ -16,6 +17,16 @@ class vs_devops::subsystems::jenkins (
 #                'email'     => 'email@example.com',
 #            }
 #        }
+    }
+    
+    ################################################################################################
+    # Configuring Security: 
+    #        https://github.com/voxpupuli/puppet-jenkins#configuring-security
+    # ------------------------------------------------------------------------
+    # Jenkins security is not managed by puppet unless jenkins::security is defined.
+    ################################################################################################
+    class {  'jenkins::security':
+        security_model  => "${config['securityModel']}",
     }
     
     
