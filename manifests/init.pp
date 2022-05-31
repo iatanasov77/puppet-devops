@@ -7,6 +7,7 @@ class vs_devops (
 	Array $packages             = [],
     String $gitUserName         = 'undefined_user_name',
     String $gitUserEmail        = 'undefined@example.com',
+    String $gitCredentials      = '',
     
     /* LAMP SERVER */
 	Array $apacheModules        = [],
@@ -37,9 +38,16 @@ class vs_devops (
 		stage         => 'dependencies-install',
 	} ->
     class { 'vs_devops::dependencies::packages':
-        stage   => 'dependencies-install',
+        stage           => 'dependencies-install',
+        gitUserName     => $gitUserName,
+        gitUserEmail    => $gitUserEmail,
     }
 	
+	class { 'vs_devops::dependencies::git_setup':
+        stage           => 'after-main',
+        gitCredentials  => $gitCredentials,
+    }
+    
 	class { '::vs_devops::vstools':
         vstools => $vstools,
     }
