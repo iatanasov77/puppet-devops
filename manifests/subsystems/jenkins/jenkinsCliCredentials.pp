@@ -1,7 +1,7 @@
 class vs_devops::subsystems::jenkins::jenkinsCliCredentials (
+    $jenkinsCli,
 	Hash $credentials  = {},
-	$readPrivateKeys   = undef,
-) {	
+) {
 	/*
 	 * Tutorial: https://sharadchhetri.com/manage-jenkins-credentials/
 	 */
@@ -12,11 +12,10 @@ class vs_devops::subsystems::jenkins::jenkinsCliCredentials (
             config  => $crd,
         } ->
         Exec { "Set PrivateKey for: ${id}":
-            command => "${readPrivateKeys} -i${id}",
-            #require => 
+            command => "/usr/bin/php /vagrant/jenkins.d/replace_private_key.php -i${id}",
         } ->
         Exec { "Add Global Credential: ${id}":
-            command    => "/usr/bin/java -jar /usr/lib/jenkins/jenkins-cli.jar -s http://localhost:8080/ \
+            command    => "/usr/bin/java -jar ${jenkinsCli} -s http://localhost:8080/ \
                             create-credentials-by-xml system::system::jenkins _  < /tmp/jenkins-credential-${id}.xml",
             timeout    => 1800,
             tries      => 3,

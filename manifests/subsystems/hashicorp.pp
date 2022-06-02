@@ -1,25 +1,24 @@
 class vs_devops::subsystems::hashicorp (
 	Hash $config       = {},
-	String $vaultPort  = '8200',
 ) {
+    include hashi_stack::repo
+    
     if $config['packer'] {
-        class { hashicorp::packer:
+        class { vs_devops::subsystems::hashicorp::packer:
             version   => $config['packer'],
         }
     }
     
     if $config['terraform'] {
-    	class { hashicorp::terraform:
+    	class { vs_devops::subsystems::hashicorp::terraform:
             version   => $config['terraform'],
         }
     }
     
     if $config['vault'] {
-        class { hashicorp::vault:
-            version   => $config['vault'],
-        } ->
-        vs_devops::subsystems::hashicorp::vaultService { 'vault':
-            vaultPort   => $vaultPort,
+        class { vs_devops::subsystems::hashicorp::vault:
+            version     => $config['vault'],
+            vaultPort   => "${config['vaultPort']}",
         }
     }
 }

@@ -1,47 +1,37 @@
 class vs_devops::subsystems (
     Hash $subsystems    = {},
-    String $vaultPort   = '8200',
 ) {
 	$subsystems.each |String $subsysKey, Hash $subsys| {
      
         case $subsysKey
         {
-            'jenkins':
+            'icinga':
             {
-            	if ( $subsys['enabled'] ) {
-            		stage { 'jenkins-plugins-cli': }
-            		stage { 'jenkins-jobs': }
-			    	stage { 'notify-services': }
-					Stage['main'] -> Stage['jenkins-plugins-cli'] -> Stage['jenkins-jobs'] -> Stage['notify-services']
-			
-			    	stage { 'jenkins-install': before => Stage['main'] }
-			        class { 'vs_devops::subsystems::jenkins':
-			        	config	=> $subsys,
-			        	plugins	=> $vsConfig['jenkinsPlugins'],
-			            stage	=> 'jenkins-install',
-			        }
-			        
-			        class { 'vs_devops::subsystems::jenkins::jenkinsCliPlugins':
-                        plugins     => $subsys['jenkinsPluginsCli'],
-                        stage       => 'jenkins-plugins-cli',
-			        }
-			        
-			        class { 'vs_devops::subsystems::jenkins::jenkinsJobs':
-                        jobs    => $subsys['jobs'],
-                        stage   => 'jenkins-jobs',
-                    }
-			        
-			        class { 'vs_devops::notifyServices':
-			            stage	=> 'notify-services',
-			        }
+                class { 'vs_devops::subsystems::icinga':
+                    config    => $subsys,
+                }
+                
+                # Icinga Web Interface
+                ##############################
+                class{ 'vs_devops::subsystems::icinga::icingaWebInterface':
+                    require => [Class['vs_devops::lamp'], Class['vs_devops::subsystems::icinga']],
                 }
             }
             
-            'hashicorp':
+            'jenkins':
             {
-                class { 'vs_devops::subsystems::hashicorp':
-                    config      => $subsys,
-                    vaultPort   => $vaultPort,
+            	if ( $subsys['enabled'] ) {
+			        class { 'vs_devops::subsystems::jenkins':
+			        	config          => $subsys,
+			        	
+			        	plugins	        => $vsConfig['jenkinsPlugins'],
+			        	jobs            => $vsConfig['jenkinsJobs'],
+			        	credentials     => $vsConfig['jenkinsCredentials'],
+			            
+                        pluginsCli      => $vsConfig['jenkinsPluginsCli'],
+                        jobsCli         => $vsConfig['jenkinsJobsCli'],
+                        credentialsCli  => $vsConfig['jenkinsCredentialsCli'],
+			        }
                 }
             }
             

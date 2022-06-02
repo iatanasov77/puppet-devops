@@ -7,7 +7,7 @@
         
     </properties>
     <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="<%= @config['plugins']['definitionPlugin'] %>">
-        <script>`<%= @fetchPipelineCommand %>`</script>
+        <script><%= @pipeline %></script>
         <sandbox>true</sandbox>
     </definition>
     <triggers/>

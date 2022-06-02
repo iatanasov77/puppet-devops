@@ -1,68 +1,65 @@
 class vs_devops::subsystems::jenkins (
-	Hash $config    = {},
-	Hash $plugins	= {},
+	Hash $config           = {},
+	
+	Hash $plugins          = {},
+	Hash $jobs             = {},
+	Hash $credentials      = {},
+	
+	Hash $pluginsCli       = {},
+    Hash $jobsCli          = {},
+	Hash $credentialsCli   = {},
 ) {
-    $jenkinsPluginDir   = '/var/lib/jenkins/plugins'
-    $jenkinsPluginUrl   = 'http://updates.jenkins-ci.org'
-    
-    class { 'jenkins':
-        version         => "${config['version']}",
-        install_java    => true,
-        cli_username    => "${config['jenkinsAdmin']['username']}",
-        cli_password    => "${config['jenkinsAdmin']['password']}",
+    ####################################################################
+    # Install Jenkins - BEFORE Stage Main
+    ####################################################################
+    class { 'vs_devops::subsystems::jenkins::jenkinsInstall':
+        config      => $config,
         
-#         user_hash => {
-#            'admin' => {
-#                'password'  => 'admin',
-#                'email'     => 'email@example.com',
-#            }
-#        }
+        plugins     => $plugins,
+        jobs        => $jobs,
+        credentials => $credentials,
+        
+        stage       => 'jenkins-install',
     }
-    
-    ################################################################################################
-    # Configuring Security: 
-    #        https://github.com/voxpupuli/puppet-jenkins#configuring-security
-    # ------------------------------------------------------------------------
-    # Jenkins security is not managed by puppet unless jenkins::security is defined.
-    ################################################################################################
-    class {  'jenkins::security':
-        security_model  => "${config['securityModel']}",
-    }
-    
-    
-#    jenkins::user { 'admin':
-#        email    => 'jdoe@example.com',
-#        password => 'admin',
-#    }
 
-    class { 'jenkins::master':
-       	version => "${config['swarmVersion']}",
+    ####################################################################
+    # Configure Jenkins by CLI - IN Stage Main
+    ####################################################################
+    if find_file( '/usr/lib/jenkins/jenkins-cli.jar' ) {
+        $jenkinsCli = '/usr/lib/jenkins/jenkins-cli.jar'
+    } else {
+        $jenkinsCli = '/usr/share/java/jenkins-cli.jar'
     }
     
-    $plugins.each |String $plugin, Hash $attributes|
-    {
-        if ( $plugin == 'credentials-binding' ) {
-            $version = sprintf( "%.2f", $attributes['version'] )
-        } else {
-            $version    = $attributes['version']
-        }
-        
-        $ret = try() || {
-            notice( "Installing ${attributes['description']} ..." )
-            jenkins::plugin { $plugin:
-                version => $version,
-                #require => Class['jenkins']
-            }
-            'SUCCESS!!!'
-        
-        # Only catch certain exceptions:    }.catch('ArgumentError', 'RuntimeError') |$exception| {
-        }.catch |$exception| {
-            file_line { 'jenkins_plugin_failed':
-                path => '/vagrant/var/log/jenkins_plugin_fails',
-                line => $plugin,
-            }
-            'FAILED!!!'
-        }
-        notice( $ret )
+    class { 'vs_devops::subsystems::jenkins::jenkinsCliPlugins':
+        jenkinsCli  => "${jenkinsCli}",
+        plugins     => $pluginsCli,
+    } ->
+    class { 'vs_devops::notifyServices':
+
     }
+    
+    ####################################################################
+    # Configure Jenkins by CLI - AFTER Stage Main
+    ####################################################################
+    class { 'vs_devops::subsystems::jenkins::jenkinsCliCredentials':
+        jenkinsCli      => "${jenkinsCli}",
+        credentials     => $credentialsCli,
+        stage           => 'jenkins-credentials-cli',
+    }
+    
+    class { 'vs_devops::subsystems::jenkins::jenkinsCliJobs':
+        jenkinsCli  => "${jenkinsCli}",
+        jobs        => $jobsCli,
+        stage       => 'jenkins-jobs-cli',
+    }
+    
+    ####################################################################
+    # Setup Security Model
+    ####################################################################
+    /*
+    Exec { "Set Jenkins Security Model by CLI":
+        command    => "sed -i 's/<useSecurity>true<\/useSecurity>/<useSecurity>false<\/useSecurity>/g' /var/lib/jenkins/config.xml",
+    }
+    */
 }

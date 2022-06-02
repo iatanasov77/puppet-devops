@@ -28,9 +28,11 @@ class vs_devops::subsystems::elastic_stack (
         },
     }
     
-    class { 'vs_devops::subsystems::elastic_stack::logstash':
-        config  => $config,
-        stage   => 'elastic_stack_late_install',
+    if has_key( $config, 'logstash_port' ) {
+        class { 'vs_devops::subsystems::elastic_stack::logstash':
+            config  => $config,
+            stage   => 'elastic_stack_late_install',
+        }
     }
     
     class { 'vs_devops::subsystems::elastic_stack::beat::metricbeat':

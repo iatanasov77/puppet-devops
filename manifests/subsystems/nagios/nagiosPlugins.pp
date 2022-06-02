@@ -13,7 +13,7 @@ class vs_devops::subsystems::nagios::nagiosPlugins
         if ! defined( Package['perl-utf8-all'] ) {
             package { 'perl-utf8-all':
                 ensure  => 'present',
-                require => Yumrepo["PowerTools"],
+                require => Class["vs_core::dependencies::powertools"],
             }
         }
     } else {

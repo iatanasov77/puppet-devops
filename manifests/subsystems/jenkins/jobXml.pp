@@ -1,20 +1,18 @@
 define vs_devops::subsystems::jenkins::jobXml (
     String $jobId,
-    Hash $config,
+    Hash $jobConfig,
 ) {
-    if ( $config['createXml'] ) {
-        $xmlConfig  = to_json( $config['config'] )
-        Exec { "Create Job Xml /tmp/jenkins-job-${jobId}.xml":
-            command => "${config['createXml']} -t '${config['type']}' -i '${jobId}' -c '${xmlConfig}'"
-        }
+    notice( "PIPELINE FILE: ${jobConfig['config']['pipeline']}" )
+    if $jobConfig['type']  == 'Pipeline' {
+        $fetchPipelineCommand   = "/usr/bin/cat ${jobConfig['config']['pipeline']}"
+        $pipeline               = file( "${jobConfig['config']['pipeline']}" )
     } else {
-        if $config['type']  == 'Pipeline' {
-            $fetchPipelineCommand   = "/usr/bin/cat ${config['pipeline']}"
-        }
-    
-        File { "/tmp/jenkins-job-${jobId}.xml":
-            ensure  => file,
-            content => template( "vs_devops/jenkins/jobs/${config['type']}.xml.erb" ),
-        }
+        fail( 'Unknown Job Type !!!' )
+    }
+
+    $config = $jobConfig['config']
+    File { "/tmp/jenkins-job-${jobId}.xml":
+        ensure  => file,
+        content => template( "vs_devops/jenkins/jobs/${jobConfig['type']}.xml.erb" ),
     }
 }

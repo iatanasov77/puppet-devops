@@ -1,4 +1,6 @@
 class vs_devops (
+    Hash $dependencies          = {},
+    
 	String $defaultHost,
     String $defaultDocumentRoot	= '/vagrant/gui_symfony/public',
     
@@ -27,37 +29,60 @@ class vs_devops (
     Boolean $forcePhp7Repo      = true,
     
     Hash $vstools               = {},
-    String $vaultPort           = '8200',
 ) {
-    stage { 'dependencies-install': before => Stage['main'] }
+    ######################################################################
+    # Stages After Main
+    ######################################################################
+    stage { 'git-setup': }
+    stage { 'jenkins-plugins-cli': }
+    stage { 'jenkins-jobs': }
+    stage { 'icinga_web_interface': }
+    stage { 'jenkins-credentials-cli': }
+    stage { 'jenkins-jobs-cli': }
+    stage { 'notify-services': }
+    Stage['main']   -> Stage['git-setup'] -> Stage['jenkins-jobs'] -> Stage['icinga_web_interface']
+                    -> Stage['jenkins-plugins-cli'] -> Stage['jenkins-credentials-cli'] -> Stage['jenkins-jobs-cli']
+                    -> Stage['notify-services']
     
-	class { '::vs_devops::dependencies::repos':
+    ######################################################################
+    # Stages Before Main
+    ######################################################################
+    stage { 'dependencies-install': before => Stage['main'] }
+    stage { 'jenkins-install': before => Stage['main'] }
+    
+    
+
+
+    ######################################################################
+    # Start Configuration
+    ######################################################################
+	class { '::vs_core::dependencies::repos':
+        dependencies  => $dependencies,
 		forcePhp7Repo => $forcePhp7Repo,
 		phpVersion    => $phpVersion,
 		mySqlProvider => $mySqlProvider,
 		stage         => 'dependencies-install',
 	} ->
-    class { 'vs_devops::dependencies::packages':
+    class { 'vs_core::dependencies::packages':
         stage           => 'dependencies-install',
         gitUserName     => $gitUserName,
         gitUserEmail    => $gitUserEmail,
     }
 	
-	class { 'vs_devops::dependencies::git_setup':
-        stage           => 'after-main',
+	class { 'vs_core::dependencies::git_setup':
+        stage           => 'git-setup',
         gitCredentials  => $gitCredentials,
     }
     
-	class { '::vs_devops::vstools':
+	class { '::vs_core::vstools':
         vstools => $vstools,
     }
     
-	class { '::vs_devops::packages':
+	class { '::vs_core::packages':
         packages        => $packages,
         gitUserName     => $gitUserName,
         gitUserEmail    => $gitUserEmail,
-        #stage           => 'dependencies-install',
-    } ->
+    }
     
     class { '::vs_devops::lamp':
     	defaultHost					=> $defaultHost,
@@ -76,11 +101,11 @@ class vs_devops (
         
         phpMyAdmin					=> $phpMyAdmin,
         databases					=> $databases,
-    } ->
+        stage                       => 'main',
+    }
     
 	class { '::vs_devops::subsystems':
         subsystems      => $subsystems,
-        vaultPort       => $vaultPort,
     }
     
     file { "${defaultDocumentRoot}/../var/subsystems.json":

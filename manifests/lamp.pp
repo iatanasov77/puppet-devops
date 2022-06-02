@@ -18,7 +18,7 @@ class vs_devops::lamp (
     
     Boolean $forcePhp7Repo      = false,
 ) {
-	class { '::vs_lamp':
+	class { 'vs_lamp':
         phpVersion                  => $phpVersion,
         apacheModules               => $apacheModules,
         
