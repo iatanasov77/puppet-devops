@@ -8,6 +8,8 @@ class vs_devops::subsystems::jenkins (
 	Hash $pluginsCli       = {},
     Hash $jobsCli          = {},
 	Hash $credentialsCli   = {},
+	
+	Hash $libraries        = {},
 ) {
     ####################################################################
     # Install Jenkins - BEFORE Stage Main
@@ -35,8 +37,18 @@ class vs_devops::subsystems::jenkins (
         jenkinsCli  => "${jenkinsCli}",
         plugins     => $pluginsCli,
     } ->
-    class { 'vs_devops::notifyServices':
-
+    Exec { 'Jenkins Service Restart After Add Plugins':
+        command => 'service jenkins restart',
+    }
+    
+    ####################################################################
+    # Configure Jenkins Libraries - IN Stage Main
+    ####################################################################
+    class { 'vs_devops::subsystems::jenkins::globalLibrariesXml':
+        libraries   => $libraries,
+    } ->
+    Exec { 'Jenkins Service Restart After Add Libraries':
+        command => 'service jenkins restart',
     }
     
     ####################################################################

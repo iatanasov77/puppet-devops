@@ -31,6 +31,8 @@ class vs_devops::subsystems (
                         pluginsCli      => $vsConfig['jenkinsPluginsCli'],
                         jobsCli         => $vsConfig['jenkinsJobsCli'],
                         credentialsCli  => $vsConfig['jenkinsCredentialsCli'],
+                        
+                        libraries       => $vsConfig['jenkinsLibraries'],
 			        }
                 }
             }
