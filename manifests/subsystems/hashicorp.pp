@@ -5,20 +5,21 @@ class vs_devops::subsystems::hashicorp (
     
     if $config['packer'] {
         class { vs_devops::subsystems::hashicorp::packer:
-            version   => $config['packer'],
+            version => $config['packer']['version'],
         }
     }
     
     if $config['terraform'] {
     	class { vs_devops::subsystems::hashicorp::terraform:
-            version   => $config['terraform'],
+            version => $config['terraform']['version'],
+            config  => $config['terraform']['config'],
         }
     }
     
     if $config['vault'] {
         class { vs_devops::subsystems::hashicorp::vault:
-            version     => $config['vault'],
-            vaultPort   => "${config['vaultPort']}",
+            version => $config['vault']['version'],
+            config  => $config['vault']['config'],
         }
     }
 }

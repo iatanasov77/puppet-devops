@@ -1,17 +1,12 @@
 class vs_devops::subsystems::hashicorp::vault (
-    String $version     = 'latest',
-    String $vaultPort   = '0000',
+    String $version = 'latest',
+    Hash $config    = { port => '8200' }
 ) {
-    /*
-    class { hashicorp::vault:
-        version   => $version,
-    }
-    */
     package { 'vault':
         ensure  => installed,
         require => Class['Hashi_stack::Repo'],
     } ->
     vs_devops::subsystems::hashicorp::vaultService { 'vault':
-        vaultPort   => "${vaultPort}",
+        vaultPort   => "${config['port']}",
     }
 }

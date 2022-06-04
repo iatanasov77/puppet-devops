@@ -26,6 +26,9 @@ class vs_devops::subsystems::cloud_platforms (
     }
     
     if $config['aws'] {
-        notice( "AWS NOT IMPLEMENTED YET !!!" )
+        # CentOs 7 and CentOs 8
+        package { "awscli":
+            ensure  => installed,
+        }
     }
 }
