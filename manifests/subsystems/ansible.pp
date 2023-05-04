@@ -6,6 +6,7 @@ class vs_devops::subsystems::ansible (
         ensure  => 'present',
     }
     
+    /*
     if ( $ansibleConfig['rolesUpdate'] == true )
     {
         $ansibleConfig['galaxyRoles'].each |String $role|
@@ -35,4 +36,5 @@ class vs_devops::subsystems::ansible (
             }
         }
     }
+    */
 }

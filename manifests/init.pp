@@ -9,7 +9,7 @@ class vs_devops (
 	Array $packages             = [],
     String $gitUserName         = 'undefined_user_name',
     String $gitUserEmail        = 'undefined@example.com',
-    String $gitCredentials      = '',
+    Array $gitCredentials       = [],
     
     /* LAMP SERVER */
 	Array $apacheModules        = [],
@@ -29,6 +29,7 @@ class vs_devops (
     Boolean $forcePhp7Repo      = true,
     
     Hash $vstools               = {},
+    Hash $frontendtools         = {},
 ) {
     ######################################################################
     # Stages After Main
@@ -49,9 +50,8 @@ class vs_devops (
     ######################################################################
     stage { 'dependencies-install': before => Stage['main'] }
     stage { 'jenkins-install': before => Stage['main'] }
+    stage { 'icinga-install': before => Stage['main'] }
     
-    
-
 
     ######################################################################
     # Start Configuration
@@ -71,6 +71,8 @@ class vs_devops (
 	
 	class { 'vs_core::dependencies::git_setup':
         stage           => 'git-setup',
+        gitUserName     => $gitUserName,
+        gitUserEmail    => $gitUserEmail,
         gitCredentials  => $gitCredentials,
     }
     
@@ -82,6 +84,10 @@ class vs_devops (
         packages        => $packages,
         gitUserName     => $gitUserName,
         gitUserEmail    => $gitUserEmail,
+    }
+    
+    class { '::vs_core::frontendtools':
+        frontendtools   => $frontendtools,
     }
     
     class { '::vs_devops::lamp':

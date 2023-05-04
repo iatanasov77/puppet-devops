@@ -54,11 +54,4 @@ class vs_devops::lamp (
             }
         ],
     }
-    
-    if ( $forcePhp7Repo ) {
-        file { "/usr/lib64/httpd/modules/libphp${phpVersion}.so":
-            ensure  => link,
-            target  => '/usr/lib64/httpd/modules/libphp7.so',
-        }
-    }
 }

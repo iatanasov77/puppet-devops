@@ -28,7 +28,7 @@ class vs_devops::subsystems::elastic_stack (
         },
     }
     
-    if has_key( $config, 'logstash_port' ) {
+    if 'logstash_port' in $config {
         class { 'vs_devops::subsystems::elastic_stack::logstash':
             config  => $config,
             stage   => 'elastic_stack_late_install',
