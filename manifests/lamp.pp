@@ -54,4 +54,9 @@ class vs_devops::lamp (
             }
         ],
     }
+    
+    vs_lamp::apache_vhost{ "api.${defaultHost}":
+        hostName        => "api.${defaultHost}",
+        documentRoot    => '/vagrant/gui/public',
+    }
 }

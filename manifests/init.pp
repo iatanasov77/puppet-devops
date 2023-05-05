@@ -114,7 +114,7 @@ class vs_devops (
         subsystems      => $subsystems,
     }
     
-    file { "${defaultDocumentRoot}/../var/subsystems.json":
+    file { "/vagrant/gui/var/subsystems.json":
 		ensure  => file,
 		content => to_json_pretty( $subsystems ),
 	}
