@@ -34,7 +34,7 @@ class vs_devops::subsystems::jenkins::jenkinsInstall (
         # Only catch certain exceptions:    }.catch('ArgumentError', 'RuntimeError') |$exception| {
         }.catch |$exception| {
             file_line { 'jenkins_plugin_failed':
-                path => '/vagrant/var/log/jenkins_plugin_fails',
+                path => '/vagrant/tmp/jenkins_plugin_fails',
                 line => $plugin,
             }
             'FAILED!!!'

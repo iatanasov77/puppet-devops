@@ -2,7 +2,9 @@ class vs_devops (
     Hash $dependencies          = {},
     
 	String $defaultHost,
-    String $defaultDocumentRoot	= '/vagrant/gui_symfony/public',
+    String $defaultDocumentRoot	= '/vagrant/gui/public',
+    String $apiDocumentRoot     = '/vagrant/gui/public',
+    String $guiVarDirectory     = '/vagrant/gui/var',
     
 	Hash $subsystems			= {},
 	
@@ -40,9 +42,11 @@ class vs_devops (
     stage { 'icinga_web_interface': }
     stage { 'jenkins-credentials-cli': }
     stage { 'jenkins-jobs-cli': }
+    stage { 'vault-setup': }
     stage { 'notify-services': }
     Stage['main']   -> Stage['git-setup'] -> Stage['jenkins-jobs'] -> Stage['icinga_web_interface']
                     -> Stage['jenkins-plugins-cli'] -> Stage['jenkins-credentials-cli'] -> Stage['jenkins-jobs-cli']
+                    -> Stage['vault-setup']
                     -> Stage['notify-services']
     
     ######################################################################
@@ -56,6 +60,10 @@ class vs_devops (
     ######################################################################
     # Start Configuration
     ######################################################################
+    class { 'vs_devops::scripts':
+        stage   => 'dependencies-install',
+    }
+    
 	class { '::vs_core::dependencies::repos':
         dependencies  => $dependencies,
 		forcePhp7Repo => $forcePhp7Repo,
@@ -93,6 +101,7 @@ class vs_devops (
     class { '::vs_devops::lamp':
     	defaultHost					=> $defaultHost,
     	defaultDocumentRoot			=> $defaultDocumentRoot,
+    	apiDocumentRoot             => $apiDocumentRoot,
     	
     	forcePhp7Repo              	=> $forcePhp7Repo,
         phpVersion                  => $phpVersion,
@@ -114,7 +123,7 @@ class vs_devops (
         subsystems      => $subsystems,
     }
     
-    file { "/vagrant/gui/var/subsystems.json":
+    file { "${guiVarDirectory}/subsystems.json":
 		ensure  => file,
 		content => to_json_pretty( $subsystems ),
 	}

@@ -21,5 +21,16 @@ class vs_devops::subsystems::hashicorp (
             version => $config['vault']['version'],
             config  => $config['vault']['config'],
         }
+        
+        ####################################################################
+        # Setup Credentials
+        # ------------------
+        # https://learn.hashicorp.com/tutorials/vault/static-secrets
+        ####################################################################
+        class { '::vs_devops::subsystems::hashicorp::vaultSetup':
+            port    => "${config['vault']['config']['port']}",
+            secrets => "${config['vault']['config']['secrets']}",
+            stage       => 'vault-setup',
+        }
     }
 }

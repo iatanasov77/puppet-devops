@@ -101,7 +101,7 @@ class vs_devops::webserver
     # Setup default main virtual host
     apache::vhost { "devops.lh":
         port        => '80',
-        docroot     => '/vagrant/public',
+        docroot     => '/vagrant/gui/public',
         override    => 'all',
         
         aliases     => [
@@ -113,7 +113,7 @@ class vs_devops::webserver
         
         directories => [
             {
-                'path'              => '/vagrant/web',
+                'path'              => '/vagrant/gui/public',
                 'allow_override'    => ['All'],
                 'Require'           => 'all granted',
             },

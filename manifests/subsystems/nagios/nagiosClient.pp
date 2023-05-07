@@ -6,7 +6,7 @@ class vs_devops::subsystems::nagios::nagiosClient
     }
     
     file_line { 'command-check-docker-container':
-        line    => 'command[check-docker-container]=/vagrant/bin/check_docker_container.sh $ARG1$',
+        line    => 'command[check-docker-container]=/opt/vs_devops/check_docker_container.sh $ARG1$',
         path    => '/etc/nagios/nrpe.cfg',
         notify  => Service['nrpe'],
         require => Package['nrpe']

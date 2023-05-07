@@ -12,7 +12,7 @@ class vs_devops::subsystems::jenkins::jenkinsCliCredentials (
             config  => $crd,
         } ->
         Exec { "Set PrivateKey for: ${id}":
-            command => "/usr/bin/php /vagrant/jenkins.d/replace_private_key.php -i${id}",
+            command => "/usr/bin/php /opt/vs_devops/replace_private_key.php -i${id}",
         } ->
         Exec { "Add Global Credential: ${id}":
             command    => "/usr/bin/java -jar ${jenkinsCli} -s http://localhost:8080/ \
