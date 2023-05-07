@@ -1,9 +1,6 @@
 class vs_devops::subsystems::elastic_stack (
     Hash $config    = {},
 ) {
-    stage { 'elastic_stack_late_install': }
-    Stage['main'] -> Stage['elastic_stack_late_install']
-    
     class { 'elasticsearch':
         version     => $config['version'],
         
@@ -18,6 +15,8 @@ class vs_devops::subsystems::elastic_stack (
     }
     
     class { 'kibana':
+        ensure => "${config['version']}",
+        
         config => {
             'server.port' => $config['kibana_port'],
             'server.host' => $config['kibana_host'],
