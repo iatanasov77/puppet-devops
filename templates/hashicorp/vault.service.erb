@@ -3,7 +3,7 @@ Description=Unit that keeps vault server up and running
 
 [Service]
 WorkingDirectory=<%= @homeDir %>
-ExecStart=/usr/local/bin/vault server -config <%= @vaultConfig %>
+ExecStart=/usr/bin/vault server -config <%= @vaultConfig %>
 Restart=always
 
 [Install]

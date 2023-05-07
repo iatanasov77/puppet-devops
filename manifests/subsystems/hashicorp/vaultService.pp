@@ -1,3 +1,7 @@
+##########################################################################################
+# https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-ui
+# https://blog.vivekv.com/hashicorp-vault-systemd-startup-script.html
+##########################################################################################
 define vs_devops::subsystems::hashicorp::vaultService (
     String $vaultPort   = '8200',
     String $vaultConfig = '/etc/vault/config.hcl',
