@@ -19,15 +19,18 @@ class vs_devops::subsystems::nagios::nagiosPlugins
         $requiredPackages   = []
     }
     
-    package {[
-        'nagios-plugins-all',
-        'nagios-plugins-nrpe',
-    ]:
-        ensure  => installed,
-        require => $requiredPackages,
-        
-        #require => Class['icinga2'],
-        #notify  => Service['icinga2'],
+    if ! defined(Package['nagios-plugins-all']) {
+        Package { 'nagios-plugins-all':
+            ensure  => installed,
+            require => $requiredPackages,
+        }
+    }
+    
+    if ! defined(Package['nagios-plugins-nrpe']) {
+        Package { 'nagios-plugins-nrpe':
+            ensure  => installed,
+            require => $requiredPackages,
+        }
     }
     
     file { '/usr/bin/check_nrpe':
