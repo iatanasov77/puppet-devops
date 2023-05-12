@@ -16,7 +16,7 @@ define vs_devops::subsystems::hashicorp::vaultService (
     } ->
     File { "/etc/vault/config.hcl":
         ensure  => file,
-        path    => "/etc/vault/config.hcl",
+        path    => "${vaultConfig}",
         content => template( 'vs_devops/hashicorp/vault_config.hcl.erb' ),
         mode    => '0755',
     } ->
@@ -28,6 +28,7 @@ define vs_devops::subsystems::hashicorp::vaultService (
     } ->
     Service { "Start Service: ${name}":
         name    => "${name}",
-        ensure  => 'running',
+        ensure  => running,
+        enable  => true,
     }
 }

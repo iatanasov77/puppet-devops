@@ -50,3 +50,8 @@ if ( isset( $options['d'] ) ) {
  * Write Log
  */
 file_put_contents( '/tmp/vault_setup.log', "{$strVaultKeys}\n\n\n\n{$unsealOut}\n\n\n\n{$policyOut}\n\n\n\n{$mountSecretOut}\n\n\n\n{$postSecretsOut}\n\n\n\n{$options['d']}" );
+
+/*
+ * Write Unseal Keys For GUI
+ */
+file_put_contents( "/vagrant/gui/var/vault.json", json_encode( $vaultKeys, JSON_PRETTY_PRINT ) );
