@@ -7,6 +7,14 @@ class vs_devops::subsystems::hashicorp (
         class { vs_devops::subsystems::hashicorp::packer:
             version => $config['packer']['version'],
         }
+        
+        ######################################################################
+        # Install Vagrant Binary
+        ######################################################################
+        class { vs_devops::vagrant:
+            data    => $config['packer']['vagrant'],
+            stage   => 'packer-setup',
+        }
     }
     
     if $config['terraform'] {
@@ -30,7 +38,7 @@ class vs_devops::subsystems::hashicorp (
         class { '::vs_devops::subsystems::hashicorp::vaultSetup':
             port    => "${config['vault']['config']['port']}",
             secrets => "${config['vault']['config']['secrets']}",
-            stage       => 'vault-setup',
+            stage   => 'vault-setup',
         }
     }
 }

@@ -43,11 +43,12 @@ class vs_devops (
     stage { 'jenkins-credentials-cli': }
     stage { 'jenkins-jobs-cli': }
     stage { 'vault-setup': }
+    stage { 'packer-setup': }
     stage { 'elastic_stack_late_install': }
     stage { 'notify-services': }
     Stage['main']   -> Stage['git-setup'] -> Stage['jenkins-jobs'] -> Stage['icinga_web_interface']
                     -> Stage['jenkins-plugins-cli'] -> Stage['jenkins-credentials-cli'] -> Stage['jenkins-jobs-cli']
-                    -> Stage['vault-setup']
+                    -> Stage['vault-setup'] -> Stage['packer-setup']
                     -> Stage['elastic_stack_late_install']
                     -> Stage['notify-services']
     
