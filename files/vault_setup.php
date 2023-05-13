@@ -12,7 +12,6 @@ $options    = getopt( $shortopts, $longopts );
 $vaultPort  = $options['p'];
 if ( isset( $options['d'] ) ) {
     $secrets    = json_decode( file_get_contents( $options['d'] ), true );
-    $data   = '{ "data":  ' . json_encode( $secrets['data'] ) . ' }';
 }
 
 /*
@@ -34,16 +33,21 @@ $unsealOut  = shell_exec( "curl --request POST --data '{\"key\": \"{$vaultKeys['
 $policyOut      = shell_exec( "curl --header \"X-Vault-Token: {$vaultKeys['root_token']}\" --request PUT --data '{\"policy\":\"path \\\"secret/data/*\\\" {capabilities = [\\\"create\\\", \\\"update\\\"]}\"}' http://127.0.0.1:{$vaultPort}/v1/sys/policies/acl/my-policy" );
 $mountSecretOut = shell_exec( "curl --header \"X-Vault-Token: {$vaultKeys['root_token']}\" --request POST --data '{\"type\":\"kv-v2\" }' http://127.0.0.1:{$vaultPort}/v1/sys/mounts/secret" );
 if ( isset( $options['d'] ) ) {
-    $postSecretsCommand = "curl --header \"X-Vault-Token: {$vaultKeys['root_token']}\" --request POST --data '{$data}' http://127.0.0.1:8282/v1/secret/data/my_projects";
-    $postSecretsOut     = "{$postSecretsCommand}\n-------------------------------------------------------------------------------------------------------------------------------------\n";
-    $postSecretsOut     .= shell_exec( $postSecretsCommand );
+    foreach ( $secrets as $key => $val ) {
+        $data   = '{ "data":  ' . json_encode( $val ) . ' }';
+        
+        $postSecretsCommand = "curl --header \"X-Vault-Token: {$vaultKeys['root_token']}\" --request POST --data '{$data}' http://127.0.0.1:{$vaultPort}/v1/secret/data/{$key}";
+        $postSecretsOut     = "{$postSecretsCommand}\n-------------------------------------------------------------------------------------------------------------------------------------\n";
+        $postSecretsOut     .= shell_exec( $postSecretsCommand );
+    }
+    
 } else {
     $postSecretsOut = '';
 }
 /*
  * vault kv put secret/demo secret1=Password1 secret2=Password2
- * curl --header "X-Vault-Token: $VAULT_TOKEN" --request POST --data '{ "data": { "foo": "bar", "zip": "zap" } }' http://127.0.0.1:8282/v1/secret/data/my_projects | jq
- * curl --header "X-Vault-Token: $VAULT_TOKEN" --request LIST http://127.0.0.1:8282/v1/secret/data/my_projects?version=1 | jq
+ * curl --header "X-Vault-Token: $VAULT_TOKEN" --request POST --data '{ "data": { "foo": "bar", "zip": "zap" } }' http://127.0.0.1:{$vaultPort}/v1/secret/data/my_projects | jq
+ * curl --header "X-Vault-Token: $VAULT_TOKEN" --request LIST http://127.0.0.1:{$vaultPort}/v1/secret/data/my_projects?version=1 | jq
  */
 
 /*
