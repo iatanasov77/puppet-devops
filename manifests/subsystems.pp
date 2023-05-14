@@ -7,14 +7,16 @@ class vs_devops::subsystems (
         {
             'icinga':
             {
-                class { 'vs_devops::subsystems::icinga':
-                    config    => $subsys,
-                }
-                
-                # Icinga Web Interface
-                ##############################
-                class{ 'vs_devops::subsystems::icinga::icingaWebInterface':
-                    require => [Class['vs_devops::lamp'], Class['vs_devops::subsystems::icinga']],
+                if ( $subsys['enabled'] ) {
+                    class { 'vs_devops::subsystems::icinga':
+                        config    => $subsys,
+                    }
+                    
+                    # Icinga Web Interface
+                    ##############################
+                    class{ 'vs_devops::subsystems::icinga::icingaWebInterface':
+                        require => [Class['vs_devops::lamp'], Class['vs_devops::subsystems::icinga']],
+                    }
                 }
             }
             
