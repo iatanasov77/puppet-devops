@@ -13,17 +13,6 @@ class vs_devops::scripts
         mode    => '0777',
     }
     
-    #######################################
-    # Vault Setup Script
-    #######################################
-    -> file { '/opt/vs_devops/vault_setup.php':
-        ensure  => present,
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0777',
-        source  => 'puppet:///modules/vs_devops/vault_setup.php',
-    }
-    
     ###################################################
     # Jenkins Credentials Replace Private Key Script
     ###################################################
