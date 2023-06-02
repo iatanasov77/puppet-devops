@@ -63,8 +63,14 @@ class vs_devops (
     ######################################################################
     # Start Configuration
     ######################################################################
+    class { 'vs_core::scripts':
+        # This Make dependency cycle
+        #stage => 'install-dependencies'
+    }
+    
     class { 'vs_devops::scripts':
-        stage   => 'dependencies-install',
+        # This Make dependency cycle
+        #stage => 'install-dependencies'
     }
     
 	class { '::vs_core::dependencies::repos':
