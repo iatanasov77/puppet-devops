@@ -56,6 +56,9 @@ class vs_devops::subsystems (
                             },
                             
                             stage           => 'jenkins-credentials-cli'
+                        } ->
+                        Exec { 'Jenkins Service Restart After Vault Plugin Setup':
+                            command => 'service jenkins restart',
                         }
 			        }
                 }
