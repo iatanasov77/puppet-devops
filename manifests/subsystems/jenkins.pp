@@ -1,4 +1,5 @@
 class vs_devops::subsystems::jenkins (
+    String $jenkinsCli,
 	Hash $config           = {},
 	
 	Hash $plugins          = {},
@@ -27,12 +28,6 @@ class vs_devops::subsystems::jenkins (
     ####################################################################
     # Configure Jenkins by CLI - IN Stage Main
     ####################################################################
-    if find_file( '/usr/lib/jenkins/jenkins-cli.jar' ) {
-        $jenkinsCli = '/usr/lib/jenkins/jenkins-cli.jar'
-    } else {
-        $jenkinsCli = '/usr/share/java/jenkins-cli.jar'
-    }
-    
     class { 'vs_devops::subsystems::jenkins::jenkinsCliPlugins':
         jenkinsCli  => "${jenkinsCli}",
         plugins     => $pluginsCli,

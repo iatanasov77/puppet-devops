@@ -1,0 +1,11 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration plugin="<%= @vaultConfig['plugin'] %>">
+    <configuration>
+        <vaultUrl><%= @vaultConfig['vaultUrl'] %></vaultUrl>
+        <vaultCredentialId>vault-token</vaultCredentialId>
+        <failIfNotFound>true</failIfNotFound>
+        <skipSslVerification>false</skipSslVerification>
+        <engineVersion>2</engineVersion>
+        <timeout>60</timeout>
+    </configuration>
+</com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration>
