@@ -3,6 +3,7 @@ class vs_devops::subsystems::jenkins::jenkinsInstall (
     Hash $plugins       = {},
     Hash $jobs          = {},
     Hash $credentials   = {},
+    $jenkinsCli,
 ) {
     class { 'jenkins':
         version         => "${config['version']}",
@@ -11,8 +12,9 @@ class vs_devops::subsystems::jenkins::jenkinsInstall (
         cli_password    => "${config['jenkinsAdmin']['password']}",
     }
     
+    $swarmVersion   = sprintf( "%.2f", $config['swarmVersion'] )
     class { 'jenkins::master':
-        version => "${config['swarmVersion']}",
+        version => $swarmVersion,
     }
     
     $plugins.each |String $plugin, Hash $attributes|

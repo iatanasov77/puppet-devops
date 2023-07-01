@@ -30,11 +30,15 @@ class vs_devops::subsystems::jenkins::vaultPluginSetup (
     /*
      * Setup Vault Plugin
      */
-    File { '/var/lib/jenkins/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml':
+    -> File { '/var/lib/jenkins/com.datapipe.jenkins.vault.configuration.GlobalVaultConfiguration.xml':
         ensure  => file,
         content => template( 'vs_devops/jenkins/libraries/GlobalVaultConfiguration.xml.erb' ),
         mode    => '0644',
         owner   => 'jenkins',
         group   => 'jenkins',
+    }
+    
+    -> Exec { 'Jenkins Service Restart After Vault Plugin Setup':
+        command => 'service jenkins restart',
     }
 }

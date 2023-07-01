@@ -22,6 +22,8 @@ class vs_devops::subsystems::jenkins (
         jobs        => $jobs,
         credentials => $credentials,
         
+        jenkinsCli  => "${jenkinsCli}",
+        
         stage       => 'jenkins-install',
     }
 
@@ -65,6 +67,14 @@ class vs_devops::subsystems::jenkins (
     # Setup Security Model
     ####################################################################
     /*
+    jenkins::user { 'admin':
+        email       => "admin@${hostname}",
+        password    => 'admin',
+        
+        stage       => 'jenkins-jobs-cli',
+    }
+    
+    
     Exec { "Set Jenkins Security Model by CLI":
         command    => "sed -i 's/<useSecurity>true<\/useSecurity>/<useSecurity>false<\/useSecurity>/g' /var/lib/jenkins/config.xml",
     }
