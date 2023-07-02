@@ -25,6 +25,17 @@ class vs_devops::scripts
     }
     
     ###################################################
+    # Jenkins Credentials Replace Vault Token Script
+    ###################################################
+    -> file { '/opt/vs_devops/replace_vault_token.php':
+        ensure  => present,
+        owner   => 'root',
+        group   => 'root',
+        mode    => '0777',
+        source  => 'puppet:///modules/vs_devops/replace_vault_token.php',
+    }
+    
+    ###################################################
     # Jenkins Adjust Job Pipeline Script
     ###################################################
     -> file { '/opt/vs_devops/adjust_job_pipeline.php':

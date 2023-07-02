@@ -2,11 +2,10 @@ class vs_devops::subsystems::jenkins::vaultPluginSetup (
     $jenkinsCli,
     Hash $config = {}
 ) {
-    $vaultKeys  = loadjson( '/vagrant/gui/var/vault.json' )
     $vaultConfig    = {
         'type'          => 'VaultToken',
         'plugin'        => 'hashicorp-vault-plugin@360.v0a_1c04cf807d',
-        'vaultToken'    => "${$vaultKeys['root_token']}",
+        'vaultToken'    => '__vault_token__',
         'vaultUrl'      => "http://${hostname}:${config['vaultPort']}"
     };
     
@@ -18,7 +17,7 @@ class vs_devops::subsystems::jenkins::vaultPluginSetup (
         config  => $vaultConfig,
     } ->
     Exec { "Set PrivateKey for: vault-token":
-        command => "/usr/bin/php /opt/vs_devops/replace_private_key.php -ivault-token",
+        command => "/usr/bin/php /opt/vs_devops/replace_vault_token.php -ivault-token",
     } ->
     Exec { "Add Global Credential: vault-token":
         command    => "/usr/bin/java -jar ${jenkinsCli} -s http://localhost:8080/ \
