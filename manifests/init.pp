@@ -1,6 +1,7 @@
 class vs_devops (
     Hash $dependencies          = {},
     
+    String $hostAddress,
 	String $defaultHost,
     String $defaultDocumentRoot	= '/vagrant/gui/public',
     String $apiDocumentRoot     = '/vagrant/gui/public',
@@ -132,8 +133,21 @@ class vs_devops (
         subsystems      => $subsystems,
     }
     
+    ######################################################################
+    # Create Json Files to Use From GUI HTTP Service
+    ######################################################################
     file { "${guiVarDirectory}/subsystems.json":
 		ensure  => file,
 		content => to_json_pretty( $subsystems ),
 	}
+	
+	
+	$globalsConfig = {
+        'hostAddress'   => $hostAddress
+    }
+    
+    file { "${guiVarDirectory}/globals.json":
+        ensure  => file,
+        content => to_json_pretty( $globalsConfig ),
+    }
 }
