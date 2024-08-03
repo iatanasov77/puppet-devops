@@ -1,9 +1,19 @@
 class vs_devops::subsystems::ansible (
 	Hash $config    = {},
 ) {
+    ################################################################################
+    # This Install Works on CentOs 8
+    ################################################################################
+    
+    # Update Python PIP
+    exec{ "Update Python PIP":
+        command => "/usr/libexec/platform-python -m pip install --upgrade pip",
+    }
+    
     # Install Ansible
-    class { 'ansible':
-        ensure  => 'present',
+    exec{ "Install Ansible":
+        command => "/usr/libexec/platform-python -m pip install ansible",
+        require => Exec['Update Python PIP'],
     }
     
     /*
