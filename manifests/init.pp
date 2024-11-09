@@ -87,7 +87,7 @@ class vs_devops (
         gitUserEmail    => $gitUserEmail,
     }
 	
-	class { 'vs_core::dependencies::git_setup':
+	class { 'vs_core::git_setup':
         stage           => 'git-setup',
         gitUserName     => $gitUserName,
         gitUserEmail    => $gitUserEmail,
