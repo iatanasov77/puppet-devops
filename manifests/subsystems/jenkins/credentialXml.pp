@@ -2,7 +2,7 @@ define vs_devops::subsystems::jenkins::credentialXml (
     String $crdId,
     Hash $config,
 ) {
-    if ! ( $config['type'] in [ 'SSHUserPrivateKey', 'UsernamePassword', 'VaultToken' ] ) {
+    if ! ( $config['type'] in [ 'SSHUserPrivateKey', 'UsernamePassword', 'VaultToken', 'SecretText' ] ) {
        fail( 'Unknown Credentials Type !!!' )
     }
     
@@ -28,6 +28,10 @@ define vs_devops::subsystems::jenkins::credentialXml (
     
     if $config['vaultToken'] {
         $crdVaultToken  = $config['vaultToken']
+    }
+    
+    if $config['secret'] {
+        $crdSecret  = $config['secret']
     }
     
     File { "/tmp/jenkins-credential-${crdId}.xml":
