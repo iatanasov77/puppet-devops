@@ -5,7 +5,8 @@ class vs_devops::subsystems::icinga (
 	Hash $config    = {},
 ) {
 	case $::operatingsystem {
-    	centos: {
+    	#centos: {
+    	'RedHat', 'CentOS', 'OracleLinux', 'Fedora', 'AlmaLinux': {
             if Integer( $::operatingsystemmajrelease ) < 9 {
         		$centosVersion	= $::operatingsystemmajrelease
         		
@@ -35,7 +36,10 @@ class vs_devops::subsystems::icinga (
     	}
     }
     
-    if $::operatingsystem == 'centos' and $::operatingsystemmajrelease == '8' {
+    if (
+        ( $::operatingsystem == 'centos' or $::operatingsystem == 'AlmaLinux' ) and
+        $::operatingsystemmajrelease == '8'
+    ) {
         #$nagiosPluginsRequire   = [ Class['vs_core::dependencies::powertools']]
         $nagiosPluginsRequire   = []
     } else {

@@ -1,6 +1,9 @@
 class vs_devops::subsystems::nagios::nagiosPlugins
 {
-    if $::operatingsystem == 'centos' and $::operatingsystemmajrelease == '8' {
+    if (
+        ( $::operatingsystem == 'centos' or $::operatingsystem == 'AlmaLinux' ) and
+        $::operatingsystemmajrelease == '8'
+    ) {
     
         #####################################################################
         # Workaroaund: Force enabling required repositories for CentOs 8
