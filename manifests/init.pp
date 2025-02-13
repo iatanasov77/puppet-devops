@@ -143,7 +143,8 @@ class vs_devops (
 	
 	
 	$globalsConfig = {
-        'hostAddress'   => $hostAddress
+        'operatingsystem'   => $::operatingsystem,
+        'hostAddress'       => $hostAddress
     }
     
     file { "${guiVarDirectory}/globals.json":
