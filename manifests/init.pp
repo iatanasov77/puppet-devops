@@ -33,6 +33,8 @@ class vs_devops (
     
     Hash $vstools               = {},
     Hash $frontendtools         = {},
+    
+    Hash $finalFixes            = {},
 ) {
     ######################################################################
     # Stages After Main
@@ -46,12 +48,13 @@ class vs_devops (
     stage { 'vault-setup': }
     stage { 'packer-setup': }
     stage { 'elastic_stack_late_install': }
+    stage { 'after-main': }
     stage { 'notify-services': }
     Stage['main']   -> Stage['git-setup'] -> Stage['jenkins-jobs'] -> Stage['icinga_web_interface']
                     -> Stage['vault-setup'] -> Stage['packer-setup']
                     -> Stage['jenkins-plugins-cli'] -> Stage['jenkins-credentials-cli'] -> Stage['jenkins-jobs-cli']
                     -> Stage['elastic_stack_late_install']
-                    -> Stage['notify-services']
+                    -> Stage['after-main'] -> Stage['notify-services']
     
     ######################################################################
     # Stages Before Main
@@ -85,6 +88,7 @@ class vs_devops (
         stage           => 'dependencies-install',
         gitUserName     => $gitUserName,
         gitUserEmail    => $gitUserEmail,
+        jdkVersion      => "${dependencies['jdkVersion']}",
     }
 	
 	class { 'vs_core::git_setup':
@@ -150,5 +154,16 @@ class vs_devops (
     file { "${guiVarDirectory}/globals.json":
         ensure  => file,
         content => to_json_pretty( $globalsConfig ),
+    }
+    
+    ######################################################################
+    # Apply Final Fixes if Needed
+    ######################################################################
+    if ( $finalFixes['enabled'] ) { 
+        class { '::vs_core::dependencies::final_fixes':
+            stage       => 'after-main',
+            subsystems  => $subsystems,
+            finalFixes  => $finalFixes,
+        }
     }
 }
