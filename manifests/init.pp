@@ -36,6 +36,12 @@ class vs_devops (
     
     Hash $finalFixes            = {},
 ) {
+    exec { 'daemon-reload':
+        command     => 'systemctl daemon-reload',
+        path        => '/bin:/sbin:/usr/bin:/usr/sbin',
+        refreshonly => true,
+    }
+    
     ######################################################################
     # Stages After Main
     ######################################################################
