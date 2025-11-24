@@ -1,8 +1,8 @@
 class vs_devops::subsystems::nagios::nagiosPlugins
 {
     if (
-        ( $::operatingsystem == 'centos' or $::operatingsystem == 'AlmaLinux' ) and
-        $::operatingsystemmajrelease == '8'
+        ( $facts['os']['name'] == 'centos' or $facts['os']['name'] == 'AlmaLinux' ) and
+        $facts['os']['release']['major'] == '8'
     ) {
     
         #####################################################################

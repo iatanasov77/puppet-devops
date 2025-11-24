@@ -1,9 +1,9 @@
 class vs_devops::subsystems::ansible (
 	Hash $config    = {},
 ) {
-    case $::operatingsystem {
+    case $facts['os']['name'] {
         'AlmaLinux': {
-            if Integer( $::operatingsystemmajrelease ) == 8 {
+            if Integer( $facts['os']['release']['major'] ) == 8 {
                 package { 'ansible':
                     ensure => present,
                 }

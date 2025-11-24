@@ -153,7 +153,7 @@ class vs_devops (
 	
 	
 	$globalsConfig = {
-        'operatingsystem'   => $::operatingsystem,
+        'operatingsystem'   => $facts['os']['name'],
         'hostAddress'       => $hostAddress
     }
     

@@ -4,11 +4,10 @@
 class vs_devops::subsystems::icinga (
 	Hash $config    = {},
 ) {
-	case $::operatingsystem {
-    	#centos: {
+	case $facts['os']['name'] {
     	'RedHat', 'CentOS', 'OracleLinux', 'Fedora', 'AlmaLinux': {
-            if Integer( $::operatingsystemmajrelease ) < 9 {
-        		$centosVersion	= $::operatingsystemmajrelease
+            if Integer( $facts['os']['release']['major'] ) < 9 {
+        		$centosVersion	= $facts['os']['release']['major']
         		
         		#include vs_devops::webserver
     		    Exec{ 'Icinga-Rpm':
@@ -37,8 +36,8 @@ class vs_devops::subsystems::icinga (
     }
     
     if (
-        ( $::operatingsystem == 'centos' or $::operatingsystem == 'AlmaLinux' ) and
-        $::operatingsystemmajrelease == '8'
+        ( $facts['os']['name'] == 'centos' or $facts['os']['name'] == 'AlmaLinux' ) and
+        $facts['os']['release']['major'] == '8'
     ) {
         #$nagiosPluginsRequire   = [ Class['vs_core::dependencies::powertools']]
         $nagiosPluginsRequire   = []
