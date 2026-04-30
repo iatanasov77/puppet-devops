@@ -1,15 +1,52 @@
 class vs_devops::subsystems::jenkins::jenkinsInstall (
+    String $hostAddress,
     Hash $config        = {},
     Hash $plugins       = {},
     Hash $jobs          = {},
     Hash $credentials   = {},
     $jenkinsCli,
 ) {
+    /*
+    $jenkinsHost = "127.0.0.1"
+    $jenkinsHost = "localhost"
+    $jenkinsHost = "${hostAddress}"
+    $jenkinsHost = "${facts['hostname']}"
+    */
+    $jenkinsHost = "${facts['hostname']}"
+    
+    Exec { 'Jenkins Import GPG Key':
+        command => "rpm --import ${config['gpgKey']}",
+    } ->
+    
+    /*
+    wget::fetch { "Jenkins Repo":
+        source      => "${config['repo']}",
+        destination => '/etc/yum.repos.d/jenkins.repo',
+        verbose     => true,
+        mode        => '0666',
+        cache_dir   => '/var/cache/wget',
+    } ->
+    */
+    
     class { 'jenkins':
         version         => "${config['version']}",
+        #repo            => false,
         install_java    => false,
         cli_username    => "${config['jenkinsAdmin']['username']}",
         cli_password    => "${config['jenkinsAdmin']['password']}",
+        
+        #proxy_host      => 'devops-jenkins.lh',
+        #proxy_port      => 8080,
+    }
+    
+    file { '/var/lib/jenkins/jenkins.model.JenkinsLocationConfiguration.xml':
+        ensure  => present,
+        owner   => 'jenkins',
+        group   => 'jenkins',
+        mode    => '0644',
+        content => template( 'vs_devops/jenkins/JenkinsLocationConfiguration.xml.erb' ),
+        #require => Class['jenkins'],
+        notify  => Service['jenkins'],
     }
     
     $swarmVersion   = sprintf( "%.2f", $config['swarmVersion'] )

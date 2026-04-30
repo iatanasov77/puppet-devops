@@ -1,7 +1,16 @@
 class vs_devops::subsystems::jenkins::jenkinsCliCredentials (
     $jenkinsCli,
+    String $hostAddress,
 	Hash $credentials  = {},
 ) {
+    /*
+    $jenkinsHost = "127.0.0.1"
+    $jenkinsHost = "localhost"
+    $jenkinsHost = "${hostAddress}"
+    $jenkinsHost = "${facts['hostname']}"
+    */
+    $jenkinsHost = "${facts['hostname']}"
+    
 	/*
 	 * Tutorial: https://sharadchhetri.com/manage-jenkins-credentials/
 	 */
@@ -15,10 +24,12 @@ class vs_devops::subsystems::jenkins::jenkinsCliCredentials (
             command => "/usr/bin/php /opt/vs_devops/replace_private_key.php -i${id}",
         } ->
         Exec { "Add Global Credential: ${id}":
-            command    => "/usr/bin/java -jar ${jenkinsCli} -s http://localhost:8080/ \
+            command         => "/usr/bin/java -jar ${jenkinsCli} -s http://${jenkinsHost}:8080/ \
                             create-credentials-by-xml system::system::jenkins _  < /tmp/jenkins-credential-${id}.xml",
-            timeout    => 1800,
-            tries      => 3,
+            
+            environment     => [ "JENKINS_URL=http://${jenkinsHost}:8080/" ],
+            timeout         => 1800,
+            tries           => 3,
         }
     }
 }

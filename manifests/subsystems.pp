@@ -1,5 +1,6 @@
 class vs_devops::subsystems (
     Hash $subsystems    = {},
+    String $hostAddress,
 ) {
 	$subsystems.each |String $subsysKey, Hash $subsys| {
      
@@ -31,6 +32,7 @@ class vs_devops::subsystems (
                     
 			        class { 'vs_devops::subsystems::jenkins':
                         jenkinsCli      => $jenkinsCli,
+                        hostAddress     => $hostAddress,
 			        	config          => $subsys,
 			        	
 			        	plugins	        => $vsConfig['jenkinsPlugins'],
@@ -51,6 +53,7 @@ class vs_devops::subsystems (
                     ) {
                         class { 'vs_devops::subsystems::jenkins::vaultPluginSetup':
                             jenkinsCli      => $jenkinsCli,
+                            hostAddress     => $hostAddress,
                             config          => {
                                 'vaultPort' => $subsystems['hashicorp']['vault']['config']['port'],
                             },

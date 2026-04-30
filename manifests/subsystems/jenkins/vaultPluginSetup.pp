@@ -1,7 +1,16 @@
 class vs_devops::subsystems::jenkins::vaultPluginSetup (
     $jenkinsCli,
+    String $hostAddress,
     Hash $config = {}
 ) {
+    /*
+    $jenkinsHost = "127.0.0.1"
+    $jenkinsHost = "localhost"
+    $jenkinsHost = "${hostAddress}"
+    $jenkinsHost = "${facts['hostname']}"
+    */
+    $jenkinsHost = "${facts['hostname']}"
+
     $vaultConfig    = {
         'type'          => 'VaultToken',
         'plugin'        => 'hashicorp-vault-plugin@360.v0a_1c04cf807d',
@@ -20,7 +29,7 @@ class vs_devops::subsystems::jenkins::vaultPluginSetup (
         command => "/usr/bin/php /opt/vs_devops/replace_vault_token.php -ivault-token",
     } ->
     Exec { "Add Global Credential: vault-token":
-        command    => "/usr/bin/java -jar ${jenkinsCli} -s http://localhost:8080/ \
+        command    => "/usr/bin/java -jar ${jenkinsCli} -s http://${jenkinsHost}:8080/ \
                         create-credentials-by-xml system::system::jenkins _  < /tmp/jenkins-credential-vault-token.xml",
         timeout    => 1800,
         tries      => 3,

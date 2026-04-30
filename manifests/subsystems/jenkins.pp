@@ -1,5 +1,6 @@
 class vs_devops::subsystems::jenkins (
     String $jenkinsCli,
+    String $hostAddress,
 	Hash $config           = {},
 	
 	Hash $plugins          = {},
@@ -16,6 +17,7 @@ class vs_devops::subsystems::jenkins (
     # Install Jenkins - BEFORE Stage Main
     ####################################################################
     class { 'vs_devops::subsystems::jenkins::jenkinsInstall':
+        hostAddress => "${hostAddress}",
         config      => $config,
         
         plugins     => $plugins,
@@ -32,6 +34,7 @@ class vs_devops::subsystems::jenkins (
     ####################################################################
     class { 'vs_devops::subsystems::jenkins::jenkinsCliPlugins':
         jenkinsCli  => "${jenkinsCli}",
+        hostAddress => "${hostAddress}",
         plugins     => $pluginsCli,
     } ->
     Exec { 'Jenkins Service Restart After Add Plugins':
@@ -53,12 +56,14 @@ class vs_devops::subsystems::jenkins (
     ####################################################################
     class { 'vs_devops::subsystems::jenkins::jenkinsCliCredentials':
         jenkinsCli      => "${jenkinsCli}",
+        hostAddress     => "${hostAddress}",
         credentials     => $credentialsCli,
         stage           => 'jenkins-credentials-cli',
     }
     
     class { 'vs_devops::subsystems::jenkins::jenkinsCliJobs':
         jenkinsCli  => "${jenkinsCli}",
+        hostAddress => "${hostAddress}",
         jobs        => $jobsCli,
         stage       => 'jenkins-jobs-cli',
     }

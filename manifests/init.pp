@@ -140,7 +140,8 @@ class vs_devops (
     }
     
 	class { '::vs_devops::subsystems':
-        subsystems      => $subsystems,
+        subsystems  => $subsystems,
+        hostAddress => $hostAddress,
     }
     
     ######################################################################
@@ -154,7 +155,7 @@ class vs_devops (
 	
 	$globalsConfig = {
         'operatingsystem'   => $facts['os']['name'],
-        'hostAddress'       => $hostAddress
+        'hostAddress'       => $hostAddress,
     }
     
     file { "${guiVarDirectory}/globals.json":
