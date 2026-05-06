@@ -1,14 +1,19 @@
 class vs_devops::subsystems::elastic_stack (
     Hash $config    = {},
 ) {
-    class { 'elasticsearch':
+    class { 'vs_core::elasticsearch':
         version     => $config['version'],
+        yumRepo     => $config['yumRepo'],
         
-        api_host    => 'localhost',
-        api_port    => $config['elasticsearch_port'],
-        config      => {
+        apiProtocol => "${config['scheme']}",
+        apiHost     => "${config['elasticsearch_host']}",
+        apiPort     => $config['elasticsearch_port'],
+        apiUsername => "${config['user']}",
+        apiPassword => "${config['pass']}",
+        
+        apiConfig   => {
             'cluster'   => {
-                'name'                  => 'VsElkCluster',
+                'name'                  => "${config['elasticsearch_cluster']}",
                 'initial_master_nodes'  => ["${config['host_name']}"]
             }
         }
@@ -22,7 +27,7 @@ class vs_devops::subsystems::elastic_stack (
             'server.host' => $config['kibana_host'],
             'server.name' => $config['host_name'],
             
-            'elasticsearch.hosts'           => ["http://localhost:${config['elasticsearch_port']}"],
+            'elasticsearch.hosts'           => ["${config['scheme']}://${config['elasticsearch_host']}:${config['elasticsearch_port']}"],
             'elasticsearch.requestTimeout'  => '180000',
         },
     }
