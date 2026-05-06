@@ -1,6 +1,14 @@
 class vs_devops::subsystems::ansible (
 	Hash $config    = {},
 ) {
+    #################################################
+    # Set Environement Variables for Ansible
+    #################################################
+    file { '/etc/profile.d/ansible_enviroment.sh':
+        ensure  => present,
+        source  => 'puppet:///modules/vs_devops/ansible_enviroment.sh',
+    }
+
     case $facts['os']['name'] {
         'AlmaLinux': {
             if Integer( $facts['os']['release']['major'] ) == 8 {
