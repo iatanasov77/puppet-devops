@@ -6,7 +6,10 @@ class vs_devops::subsystems::elastic_stack::logstash (
     $elkPort    = $config['elasticsearch_port']
     
     class { 'logstash':
-        
+        version     => $config['version'],
+        startup_options => {
+            'LS_USER' => 'root',
+        }
     }
     
     # You must provide a valid pipeline configuration for the service to start.

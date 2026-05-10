@@ -1,0 +1,3 @@
+#----------------------------- Logstash output --------------------------------
+output.logstash:
+    hosts: ["<%= @config['host_name'] %>:<%= @config['logstash_port'] %>"]

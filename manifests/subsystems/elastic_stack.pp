@@ -12,24 +12,19 @@ class vs_devops::subsystems::elastic_stack (
         apiPassword => "${config['pass']}",
         
         apiConfig   => {
-            'cluster'   => {
-                'name'                  => "${config['elasticsearch_cluster']}",
-                'initial_master_nodes'  => ["${config['host_name']}"]
-            }
-        }
-    }
-    
-    class { 'kibana':
-        ensure => "${config['version']}",
-        
-        config => {
-            'server.port' => $config['kibana_port'],
-            'server.host' => $config['kibana_host'],
-            'server.name' => $config['host_name'],
+            'cluster.name'                  => 'VsElkCluster',
+            'node.name'                     => "${config['host_name']}",
+            'network.host'                  => ["localhost", "${facts['host_ip']}"],
+            'cluster.initial_master_nodes'  => ["${config['host_name']}"],
             
-            'elasticsearch.hosts'           => ["${config['scheme']}://${config['elasticsearch_host']}:${config['elasticsearch_port']}"],
-            'elasticsearch.requestTimeout'  => '180000',
+            'http.port'                     => 9200,
+            'http.cors.allow-origin'        => "http://localhost:1358",
+            'http.cors.enabled'             => true,
+            'http.cors.allow-headers'       => 'X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization',
+            'http.cors.allow-credentials'   => true,
         },
+        
+        guis        => $config['guis'],
     }
     
     if 'logstash_port' in $config {
@@ -39,8 +34,9 @@ class vs_devops::subsystems::elastic_stack (
         }
     }
     
-    class { 'vs_devops::subsystems::elastic_stack::beat::metricbeat':
-        config  => $config,
-        stage   => 'elastic_stack_late_install',
+    $config['beats'].each |String $beatKey, Hash $beatConfig| {
+        class { "::vs_devops::subsystems::elastic_stack::beat::${$beatKey}":
+            config  => $config,
+        }
     }
 }
