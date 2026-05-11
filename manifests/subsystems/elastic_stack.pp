@@ -24,7 +24,8 @@ class vs_devops::subsystems::elastic_stack (
             'http.cors.allow-credentials'   => true,
         },
         
-        guis        => $config['guis'],
+        indexes                             => $config['indexes'],
+        guis                                => $config['guis'],
     }
     
     if 'logstash_port' in $config {
